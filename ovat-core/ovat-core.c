@@ -14,16 +14,17 @@ ovat_core_get_exit(void)
 }
 
 static void
-ovat_core_set_exit(int fd, int argc, char argv[][OVAT_NETSOCK_MSG_MAX_ARGV_LEN], void *aux)
+ovat_core_set_exit(int fd, void *msg, void *aux)
 {
     ovat_netsock_msg_ack(fd, (struct netsock *)aux);
     ovat_core_exit = 1;
 }
 
 static void
-ovat_core_load_module(int fd, int argc, char argv[][OVAT_NETSOCK_MSG_MAX_ARGV_LEN], void *aux)
+ovat_core_load_module(int fd, void *msg, void *aux)
 {
-    printf("load module %s\n", argv[2]);
+    struct ovat_netsock_msg *load_msg = (struct ovat_netsock_msg *)msg;
+    printf("load module %s\n", load_msg->argv[2]);
     ovat_netsock_msg_ack(fd, (struct netsock *)aux);
 }
 
@@ -35,21 +36,21 @@ ovat_core_msg_handler(int fd, struct netsock *netsock_, void *msg)
 }
 
 static void
-ovat_core_commands_dump(int fd, int argc,       char argv[][OVAT_NETSOCK_MSG_MAX_ARGV_LEN], void *aux)
+ovat_core_commands_dump(int fd, void *msg, void *aux)
 {
     struct ovat_ctl_command *command = NULL;
     struct netsock *netsock = (struct netsock *)aux;
     struct list_head *ovat_commands = ovat_ctl_commands_list();
-    struct ovat_netsock_msg msg;
+    struct ovat_netsock_msg reply;
 
     list_for_each_entry(command, ovat_commands, command_node) {
         if (command) {
-            memset(&msg, 0, sizeof(struct ovat_netsock_msg));
-            msg.argc = 3;
-            snprintf(msg.argv[0], sizeof(msg.argv[0]), "%s", "ovat-appctl");
-            snprintf(msg.argv[1], sizeof(msg.argv[1]), "%s", command->name);
-            snprintf(msg.argv[2], sizeof(msg.argv[2]), "%s", command->usage);
-            ovat_netsock_msg_reply(fd, aux, &msg);
+            memset(&reply, 0, sizeof(struct ovat_netsock_msg));
+            reply.argc = 3;
+            snprintf(reply.argv[0], sizeof(reply.argv[0]), "%s", "ovat-appctl");
+            snprintf(reply.argv[1], sizeof(reply.argv[1]), "%s", command->name);
+            snprintf(reply.argv[2], sizeof(reply.argv[2]), "%s", command->usage);
+            ovat_netsock_msg_reply(fd, aux, &reply);
         }
     }
     ovat_netsock_msg_ack(fd, netsock);

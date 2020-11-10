@@ -65,4 +65,4 @@ install:
 
 .PHONY:clean
 clean:
-	rm $(CORE_OBJ) $(CORE_BIN) $(CTL_OBJ) $(NET_OBJ) $(TOOLS_OBJ) $(UTIL_OBJ) $(APPCTL_BIN)
+	rm $(CORE_OBJ) $(CORE_BIN) $(CTL_OBJ) $(NET_OBJ) $(TOOLS_OBJ) $(UTIL_OBJ) $(APPCTL_BIN)

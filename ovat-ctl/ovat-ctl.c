@@ -95,8 +95,7 @@ ovat_ctl_command_process(void *aux)
             free(pd_command);
             continue;
         }
-        command->cb(pd_command->fd, pd_command->msg_body.argc,
-                    pd_command->msg_body.argv, command->aux);
+        command->cb(pd_command->fd, &pd_command->msg_body, command->aux);
 
         list_del(&pd_command->command_node);
         free(pd_command);

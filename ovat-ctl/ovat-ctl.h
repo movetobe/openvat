@@ -4,7 +4,7 @@
 #include "ovat-list.h"
 #include "ovat-netsock-msg.h"
 
-typedef void ovat_ctl_cb(int fd, int argc, char argv[][OVAT_NETSOCK_MSG_MAX_ARGV_LEN], void *aux);
+typedef void ovat_ctl_cb(int fd, void *msg, void *aux);
 struct ovat_ctl_command {
     const char *name;
     const char *usage;
