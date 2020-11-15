@@ -25,6 +25,8 @@ struct ovat_pending_command {
 
 struct list_head *ovat_ctl_commands_list(void);
 void ovat_ctl_command_init(void);
+void ovat_ctl_command_uninit(void);
+
 int ovat_ctl_command_append(int fd, void *aux, void *msg);
 void ovat_ctl_command_process(void *aux);
 int ovat_ctl_command_register(const char *name, const char*usage, int min_args,

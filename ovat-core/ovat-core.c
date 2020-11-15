@@ -1,6 +1,7 @@
 #include "ovat-ctl.h"
 #include "ovat-netsock.h"
 #include "ovat-utils.h"
+#include "ovat-if.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,12 +22,28 @@ ovat_core_set_exit(int fd, void *msg, void *aux)
 }
 
 static void
-ovat_core_load_module(int fd, void *msg, void *aux)
+ovat_core_module_load(int fd, void *msg, void *aux)
 {
     struct ovat_netsock_msg *load_msg = (struct ovat_netsock_msg *)msg;
-    printf("load module %s\n", load_msg->argv[2]);
+
+    printf("load module %s, period %s\n", load_msg->argv[2], load_msg->argv[3]);
+    if (ovat_if_module_load(load_msg->argv[2], atoi(load_msg->argv[3])) != OVAT_EOK) {
+        ovat_if_action_reply(fd, aux, "Maybe it has not been registered, Load module", OVAT_IF_ACTION_NOT_OK);
+        return;
+    }
+    ovat_if_action_reply(fd, aux, "Load module", OVAT_IF_ACTION_OK);
+    return;
+}
+
+static void
+ovat_core_module_unload(int fd, void *msg, void *aux)
+{
+    struct ovat_netsock_msg *unload_msg = (struct ovat_netsock_msg *)msg;
+    printf("unload module %s\n", unload_msg->argv[2]);
+    ovat_if_module_unload(unload_msg->argv[2]);
     ovat_netsock_msg_ack(fd, (struct netsock *)aux);
 }
+
 
 static int
 ovat_core_msg_handler(int fd, struct netsock *netsock_, void *msg)
@@ -73,13 +90,17 @@ main(int argc, char *argv[])
 
     ovat_ctl_command_register("commands/list", "List commands", 0, 0, ovat_core_commands_dump, netsock);
     ovat_ctl_command_register("ovat/exit", "Exit ovat platform", 0, 0, ovat_core_set_exit, netsock);
-    ovat_ctl_command_register("module/load", "Load Autosar BSW module", 1, 1, ovat_core_load_module, netsock);
+    ovat_ctl_command_register("module/load", "Load module [name] [period]", 2, 2, ovat_core_module_load, netsock);
+    ovat_ctl_command_register("module/unload", "Unload module [name]", 1, 1, ovat_core_module_unload, netsock);
 
+    ovat_if_init(netsock);
     while (!ovat_core_get_exit()) {
         ovat_netsock_run(netsock);
     }
 
     ovat_netsock_destroy(netsock);
+    ovat_if_uninit();
+    ovat_ctl_command_uninit();
 out:
     return ret;
 }

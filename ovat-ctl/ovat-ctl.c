@@ -37,6 +37,27 @@ ovat_ctl_command_init(void)
     ovat_pthread_mutex_init(&ovat_pc_mutex);
 }
 
+void
+ovat_ctl_command_uninit(void)
+{
+    struct ovat_ctl_command *command = NULL, *tmp = NULL;
+    struct ovat_pending_command *pcommand = NULL, *ptmp = NULL;
+
+    list_for_each_entry_safe(command, tmp, &ovat_ctl_commands, command_node) {
+        if (command) {
+            list_del(&command->command_node);
+            free(command);
+        }
+    }
+
+    list_for_each_entry_safe(pcommand, ptmp, &ovat_pending_commands, command_node) {
+        if (pcommand) {
+            list_del(&pcommand->command_node);
+            free(pcommand);
+        }
+    }
+}
+
 int
 ovat_ctl_command_append(int fd, void *aux, void *msg)
 {

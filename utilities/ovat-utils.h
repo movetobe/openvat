@@ -1,6 +1,7 @@
 #ifndef NETSOCK_UTILS_H
 #define NETSOCK_UTILS_H
 
+#define _GNU_SOURCE
 #include <pthread.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -42,5 +43,7 @@ int ovat_pthread_join(pthread_t thread_id, void **retval);
 void ovat_pthread_mutex_init(ovat_pthread_mutex_t *mutex);
 void ovat_pthread_mutex_lock(ovat_pthread_mutex_t *mutex);
 void ovat_pthread_mutex_unlock(ovat_pthread_mutex_t *mutex);
-
+int ovat_pthread_create_detach(pthread_t *thread_id, const char *thread_name,
+                                    void *(*start_func) (void *), void *arg);
+void ovat_msleep(unsigned int msecs);
 #endif /* NETSOCK_UTILS_H */
