@@ -5,7 +5,7 @@ INCLUDE_DIRS+=$(STUB_DIR)/Common \
 			  $(STUB_DIR)/CanNm \
 			  $(STUB_DIR)/Nm \
 
-BIN:=$(DIR)/libnm-stub.so
+BIN:=$(STUB_DIR)/libnm-stub.so
 
 SHARE:=--share
 
@@ -32,7 +32,7 @@ $(DIR)/%.o:$(DIR)/%.c
 	$(CC) $@ -c $< $(CFLAGS)
 
 install:
-	cp $(BIN) $(STUB_DIR)/
+	cp $(BIN) /usr/lib/
 
 .PHONY:clean
 clean:

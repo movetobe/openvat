@@ -16,5 +16,9 @@ AUTOSAR Nm/CanNm module
 5. ovat-appctl nm/network-release 1 /* The same as call Nm_NetworkRelease(1) */
 6. CanNm shall stop 'send' Can PDUs and goto sleep mode.
 
+All modules are stub. If you want to changed to real module, you should provide the module's .so,
+and export LD_PRELOAD environment. For example: export LD_PRELOAD=/usr/lib/libcannm.so before you
+start ovat-core. unset LD_PRELOAD if necessary.
+
 movetobe@outlook.com
 2020/10/29

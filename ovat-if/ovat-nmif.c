@@ -23,10 +23,10 @@ ovat_nmif_network_request(int fd, void *msg, void *aux)
     struct ovat_netsock_msg *command_msg = (struct ovat_netsock_msg *)msg;
 
     if (Nm_NetworkRequest(atoi(command_msg->argv[2])) != E_OK) {
-        ovat_if_action_reply(fd, aux, "Nm_NetworkRequest()", OVAT_IF_ACTION_NOT_OK);
+        ovat_if_action_reply(fd, aux, "Call Nm_NetworkRequest()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    ovat_if_action_reply(fd, aux, "Nm_NetworkRequest", OVAT_IF_ACTION_OK);
+    ovat_if_action_reply(fd, aux, "Call Nm_NetworkRequest()", OVAT_IF_ACTION_OK);
 }
 
 static void
@@ -35,10 +35,10 @@ ovat_nmif_network_release(int fd, void *msg, void *aux)
     struct ovat_netsock_msg *command_msg = (struct ovat_netsock_msg *)msg;
 
     if (Nm_NetworkRelease(atoi(command_msg->argv[2])) != E_OK) {
-        ovat_if_action_reply(fd, aux, "Nm_NetworkRelease()", OVAT_IF_ACTION_NOT_OK);
+        ovat_if_action_reply(fd, aux, "Call Nm_NetworkRelease()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    ovat_if_action_reply(fd, aux, "Nm_NetworkRelease", OVAT_IF_ACTION_OK);
+    ovat_if_action_reply(fd, aux, "Call Nm_NetworkRelease()", OVAT_IF_ACTION_OK);
 }
 
 void
