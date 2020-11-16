@@ -3,7 +3,8 @@ BASE_DIR:=$(PWD)
 INCLUDE_DIRS+=$(BASE_DIR)/ovat-ctl \
 			  $(BASE_DIR)/ovat-netsock \
               $(BASE_DIR)/ovat-netsock/netsock \
-              $(BASE_DIR)/utilities
+              $(BASE_DIR)/utilities \
+              $(BASE_DIR)/ovat-log
 
 TOOLS_DIR:=$(BASE_DIR)/tools
 TOOLS_DIRS:=$(INCLUDE_DIRS) $(TOOLS_DIR)

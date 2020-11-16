@@ -1,4 +1,5 @@
 #include "ovat-utils.h"
+#include "ovat-pthread.h"
 #include <unistd.h>
 
 int
@@ -99,16 +100,4 @@ ovat_pthread_mutex_unlock(ovat_pthread_mutex_t *mutex)
     pthread_mutex_unlock(mutex);
 }
 
-void
-ovat_msleep(unsigned int msecs)
-{
-    unsigned secs = msecs / 1000;
-    unsigned usecs = (msecs % 1000) * 1000;
 
-    if (secs > 0) {
-        sleep(secs);
-    }
-    if (usecs > 0) {
-        usleep(usecs);
-    }
-}

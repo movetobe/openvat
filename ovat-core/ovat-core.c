@@ -2,6 +2,7 @@
 #include "ovat-netsock.h"
 #include "ovat-utils.h"
 #include "ovat-if.h"
+#include "ovat-log.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -73,6 +74,20 @@ ovat_core_commands_dump(int fd, void *msg, void *aux)
     ovat_netsock_msg_ack(fd, netsock);
 }
 
+static void
+ovat_log_initialize(const char *path)
+{
+    FILE *fp;
+
+    ovat_log_init(NULL, 0);
+    int ovat_log_type = ovat_log_register("ovat.core");
+    
+    ovat_log_set_level(ovat_log_type, OVAT_LOG_DEBUG);
+    ovat_log_set_global_level(OVAT_LOG_DEBUG);
+
+    fp = fopen("/var/run/ovat.log", "w+");
+    ovat_openlog_stream(fp);
+}
 
 int
 main(int argc, char *argv[])
@@ -80,11 +95,12 @@ main(int argc, char *argv[])
     int ret = OVAT_EOK;
     struct netsock *netsock = NULL;
 
+    ovat_log_initialize(NULL);
     ovat_ctl_command_init();
     ret = ovat_netsock_create("ovat-ctl-server", NETSOCK_CONN_TYPE_SERVER,
                                 "/tmp/ovat-ctl-server.sock", &netsock, ovat_core_msg_handler);
     if (ret < 0) {
-        printf("unix server create failed\n");
+        OVAT_LOG(ERR, CORE, "unix server create failed\n");
         goto out;
     }
 
@@ -94,6 +110,7 @@ main(int argc, char *argv[])
     ovat_ctl_command_register("module/unload", "Unload module [name]", 1, 1, ovat_core_module_unload, netsock);
 
     ovat_if_init(netsock);
+    OVAT_LOG(ERR, CORE, "core start\n");
     while (!ovat_core_get_exit()) {
         ovat_netsock_run(netsock);
     }

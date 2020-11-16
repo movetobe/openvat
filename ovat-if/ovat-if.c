@@ -5,8 +5,11 @@
 #include "ovat-utils.h"
 #include "ovat-netsock-msg.h"
 #include "ovat-netsock.h"
+#include "timeval.h"
+
 #include "Nm.h"
 #include "CanNm.h"
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>

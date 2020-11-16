@@ -4,7 +4,8 @@ INCLUDE_DIRS+=$(BASE_DIR)/ovat-ctl \
               $(BASE_DIR)/ovat-netsock/netsock \
               $(BASE_DIR)/utilities \
               $(BASE_DIR)/include \
-              $(BASE_DIR)/ovat-if
+              $(BASE_DIR)/ovat-if \
+              $(BASE_DIR)/ovat-log
 
 CORE_DIR:=$(BASE_DIR)/ovat-core
 CORE_DIRS:=$(INCLUDE_DIRS) $(CORE_DIR)
