@@ -23,7 +23,7 @@ netsock_unix_sock_receive_conn(void *context)
 
     ret = unix_sock->up.class->recv(fd, &(unix_sock->up), buf);
     if (ret < 0) {
-        printf("recv error, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "recv error, errno %d\n", errno);
         goto out;
     }
     if (ret == 0) {
@@ -34,7 +34,7 @@ netsock_unix_sock_receive_conn(void *context)
 
     if ((unix_sock->up.class->msg_handler == NULL)
         || (unix_sock->up.class->msg_handler(fd, &(unix_sock->up), buf) < 0)) {
-        printf("process message error\n");
+        OVAT_LOG(ERR, NETSOCK, "process message error\n");
         ret = -OVAT_ECALL;
     }
 
@@ -56,18 +56,18 @@ netsock_unix_sock_accept_conn(void *context)
     memset(&sockaddr, 0, sizeof(struct sockaddr_un));
     connfd = accept(listen_conn->fd, (struct sockaddr *) &sockaddr, &sockaddr_len);
     if (connfd < 0) {
-        printf("accept error, connfd is %d\n", connfd);
+        OVAT_LOG(ERR, NETSOCK, "accept error, connfd is %d\n", connfd);
         ret = -OVAT_ESYSCALL;
         goto err;
     }
     ret = fcntl(connfd, F_SETFL, O_NONBLOCK);
     if (ret < 0) {
-        printf("set fd non-blocking failed, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "set fd non-blocking failed, errno %d\n", errno);
         goto err;
     }
     ret = netsock_conn_construct(connfd, netsock_unix_sock_receive_conn, (void *) &(unix_sock->up));
     if (ret < 0) {
-        printf("netsock_conn_construct error\n");
+        OVAT_LOG(ERR, NETSOCK, "netsock_conn_construct error\n");
         goto err;
     }
     
@@ -94,7 +94,7 @@ netsock_unix_sock_alloc(void)
 
     unix_sock = calloc(1, sizeof(struct netsock_unix_sock));
     if (unix_sock == NULL) {
-        printf("netsock_unix_sock_alloc: malloc error\n");
+        OVAT_LOG(ERR, NETSOCK, "netsock_unix_sock_alloc: malloc error\n");
         return NULL;
     }
 
@@ -130,7 +130,7 @@ netsock_unix_sock_construct(struct netsock *netsock_)
 
     ret = fcntl(sockfd, F_SETFL, O_NONBLOCK);
     if (ret < 0) {
-        printf("set fd non-blocking failed, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "set fd non-blocking failed, errno %d\n", errno);
         goto err;
     }
 
@@ -139,35 +139,35 @@ netsock_unix_sock_construct(struct netsock *netsock_)
     
         ret = bind(sockfd, (struct sockaddr *) &sockaddr, sizeof(struct sockaddr_un));
         if (ret < 0) {
-            printf("listening socket bind error, errno %d\n", errno);
+            OVAT_LOG(ERR, NETSOCK, "listening socket bind error, errno %d\n", errno);
             goto err;
         }
 
         ret = listen(sockfd, NETSOCK_LISTEN_BACKLOG);
         if (ret < 0) {
-            printf("listening socket error, errno %d\n", errno);
+            OVAT_LOG(ERR, NETSOCK, "listening socket error, errno %d\n", errno);
             goto err;
         }
 
         ret = netsock_conn_construct(sockfd, netsock_unix_sock_accept_conn, (void *) &(unix_sock->up));
         if (ret < 0) {
-            printf("netsock_conn_construct error\n");
+            OVAT_LOG(ERR, NETSOCK, "netsock_conn_construct error\n");
             goto err;
         }
     } else if (unix_sock->up.conn_type == NETSOCK_CONN_TYPE_CLIENT) {
         ret =  connect(sockfd, (struct sockaddr *) &sockaddr, sizeof(struct sockaddr_un));
         if (ret < 0) {
-            printf("connecting to server error, errno %d\n", errno);
+            OVAT_LOG(ERR, NETSOCK, "connecting to server error, errno %d\n", errno);
             goto err;
         }
 
         ret = netsock_conn_construct(sockfd, netsock_unix_sock_receive_conn, (void *) &(unix_sock->up));
         if (ret < 0) {
-            printf("netsock_conn_construct error\n");
+            OVAT_LOG(ERR, NETSOCK, "netsock_conn_construct error\n");
             goto err;
         }
     } else {
-        printf("connection type error, type is %d\n", unix_sock->up.conn_type);
+        OVAT_LOG(ERR, NETSOCK, "connection type error, type is %d\n", unix_sock->up.conn_type);
         ret = -OVAT_ENOEXIST;
         goto err;
     }

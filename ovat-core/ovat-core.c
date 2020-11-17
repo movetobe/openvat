@@ -27,7 +27,7 @@ ovat_core_module_load(int fd, void *msg, void *aux)
 {
     struct ovat_netsock_msg *load_msg = (struct ovat_netsock_msg *)msg;
 
-    printf("load module %s, period %s\n", load_msg->argv[2], load_msg->argv[3]);
+    OVAT_LOG(INFO, CORE, "load module %s, period %s\n", load_msg->argv[2], load_msg->argv[3]);
     if (ovat_if_module_load(load_msg->argv[2], atoi(load_msg->argv[3])) != OVAT_EOK) {
         ovat_if_action_reply(fd, aux, "Maybe it has not been registered, Load module", OVAT_IF_ACTION_NOT_OK);
         return;
@@ -40,7 +40,7 @@ static void
 ovat_core_module_unload(int fd, void *msg, void *aux)
 {
     struct ovat_netsock_msg *unload_msg = (struct ovat_netsock_msg *)msg;
-    printf("unload module %s\n", unload_msg->argv[2]);
+    OVAT_LOG(INFO, CORE, "unload module %s\n", unload_msg->argv[2]);
     ovat_if_module_unload(unload_msg->argv[2]);
     ovat_netsock_msg_ack(fd, (struct netsock *)aux);
 }
@@ -74,28 +74,13 @@ ovat_core_commands_dump(int fd, void *msg, void *aux)
     ovat_netsock_msg_ack(fd, netsock);
 }
 
-static void
-ovat_log_initialize(const char *path)
-{
-    FILE *fp;
-
-    ovat_log_init(NULL, 0);
-    int ovat_log_type = ovat_log_register("ovat.core");
-    
-    ovat_log_set_level(ovat_log_type, OVAT_LOG_DEBUG);
-    ovat_log_set_global_level(OVAT_LOG_DEBUG);
-
-    fp = fopen("/var/run/ovat.log", "w+");
-    ovat_openlog_stream(fp);
-}
-
 int
 main(int argc, char *argv[])
 {
     int ret = OVAT_EOK;
     struct netsock *netsock = NULL;
 
-    ovat_log_initialize(NULL);
+    ovat_log_init("/var/log/ovat.log");
     ovat_ctl_command_init();
     ret = ovat_netsock_create("ovat-ctl-server", NETSOCK_CONN_TYPE_SERVER,
                                 "/tmp/ovat-ctl-server.sock", &netsock, ovat_core_msg_handler);
@@ -121,3 +106,6 @@ main(int argc, char *argv[])
 out:
     return ret;
 }
+
+OVAT_LOG_REGISTER(core_logtype, ovat.core, INFO);
+

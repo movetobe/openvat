@@ -1,6 +1,7 @@
 #include "netsock-epoll.h"
 #include "ovat-utils.h"
 #include "netsock-conn.h"
+#include "ovat-log.h"
 
 /*
 typedef union epoll_data {
@@ -21,7 +22,7 @@ netsock_epoll_init(void)
     int efd = epoll_create(65535);
 
     if (efd < 0) {
-        printf("epoll create error, epollfd %d\n", efd);
+        OVAT_LOG(ERR, NETSOCK, "epoll create error, epollfd %d\n", efd);
         goto out;
     }
 
@@ -45,7 +46,7 @@ netsock_epoll_ops(int epollfd, int ops, int fd, void *netsock_conn)
     ev.events = EPOLLIN;
     ev.data.ptr = netsock_conn;
     if (epoll_ctl(epollfd, ops, fd, &ev) < 0) {
-        printf("epoll_ctl error, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "epoll_ctl error, errno %d\n", errno);
         ret = -OVAT_ESYSCALL;
         goto out;
     }
@@ -71,7 +72,7 @@ netsock_epoll_process(int epollfd, struct epoll_event *events, int maxevents,
     }
 
     if (nfds < 0) {
-        printf("epoll_wait error, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "epoll_wait error, errno %d\n", errno);
         ret = -OVAT_ESYSCALL;
         goto out;
     }

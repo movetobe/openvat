@@ -4,6 +4,8 @@ DIR:=$(STUB_DIR)/Nm
 INCLUDE_DIRS+=$(STUB_DIR)/Common \
 			  $(STUB_DIR)/CanNm \
 			  $(STUB_DIR)/Nm \
+			  $(BASE_DIR)/ovat-log \
+			  $(BASE_DIR)/utilities \
 
 BIN:=$(STUB_DIR)/libnm-stub.so
 
@@ -32,8 +34,8 @@ $(DIR)/%.o:$(DIR)/%.c
 	$(CC) $@ -c $< $(CFLAGS)
 
 install:
-	cp $(BIN) /usr/lib/
+	cp -rf $(BIN) /usr/lib/
 
 .PHONY:clean
 clean:
-	rm $(OBJ) $(BIN)
+	rm -rf $(OBJ) $(BIN)

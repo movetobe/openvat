@@ -34,8 +34,8 @@ $(APPCTL_BIN):$(TOOLS_OBJ)
 	$(CC) -c $(CFLAGS) $< -o $@
 
 install:
-	cp $(APPCTL_BIN) /usr/bin/
+	cp -rf $(APPCTL_BIN) /usr/bin/
 
 .PHONY:clean
 clean:
-	rm $(TOOLS_OBJ) $(APPCTL_BIN)
+	rm -rf $(TOOLS_OBJ) $(APPCTL_BIN)

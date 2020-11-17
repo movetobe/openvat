@@ -10,13 +10,18 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <sys/queue.h>
+#include "ovat-utils.h"
 
 /* SDK log type */
-#define OVAT_LOGTYPE_CORE       0 /**< Log related to ovat-core. */
-#define OVAT_LOGTYPE_APPCTL     1 /**< Log related to ovat-appctl. */
-#define OVAT_LOGTYPE_NM         2 /**< Log related to ovat-nm. */
-#define OVAT_LOGTYPE_CANNM      3 /**< Log related to ovat-cannm. */
-
+enum {
+    OVAT_LOGTYPE_CORE = 0,
+    OVAT_LOGTYPE_NETSOCK,
+    OVAT_LOGTYPE_IF,
+    OVAT_LOGTYPE_NMIF,
+    OVAT_LOGTYPE_CANNMIF,
+    OVAT_LOGTYPE_NMSTUB,
+    OVAT_LOGTYPE_CANNMSTUB,
+};
 
 /** First identifier for extended logs */
 #define OVAT_LOGTYPE_FIRST_EXT_ID 32
@@ -133,34 +138,6 @@ int ovat_log_set_level_regexp(const char *regex, uint32_t level);
 int ovat_log_set_level(uint32_t logtype, uint32_t level);
 
 /**
- * Get the current loglevel for the message being processed.
- *
- * Before calling the user-defined stream for logging, the log
- * subsystem sets a per-lcore variable containing the loglevel and the
- * logtype of the message being processed. This information can be
- * accessed by the user-defined log output function through this
- * function.
- *
- * @return
- *   The loglevel of the message being processed.
- */
-int ovat_log_cur_msg_loglevel(void);
-
-/**
- * Get the current logtype for the message being processed.
- *
- * Before calling the user-defined stream for logging, the log
- * subsystem sets a per-lcore variable containing the loglevel and the
- * logtype of the message being processed. This information can be
- * accessed by the user-defined log output function through this
- * function.
- *
- * @return
- *   The logtype of the message being processed.
- */
-int ovat_log_cur_msg_logtype(void);
-
-/**
  * Register a dynamic log type
  *
  * If a log is already registered with the same type, the returned value
@@ -260,7 +237,7 @@ int ovat_log(uint32_t level, uint32_t logtype, const char *format, ...);
 int ovat_vlog(uint32_t level, uint32_t logtype, const char *format, va_list ap);
 //	__ovat_format_printf(3, 0);
 
-int ovat_log_init(const char *id, int facility);
+void ovat_log_init(const char *path);
 
 /**
  * Generates a log message.
@@ -283,7 +260,7 @@ int ovat_log_init(const char *id, int facility);
  */
 #define OVAT_LOG(l, t, ...)					\
 	 ovat_log(OVAT_LOG_ ## l,					\
-		 OVAT_LOGTYPE_ ## t, # t ": " __VA_ARGS__)
+		 OVAT_LOGTYPE_ ## t, "%s: %s", __func__, __VA_ARGS__)
 
 /**
  * Generates a log message for data path.
@@ -310,6 +287,34 @@ int ovat_log_init(const char *id, int facility);
 	 ovat_log(OVAT_LOG_ ## l,					\
 		 OVAT_LOGTYPE_ ## t, # t ": " __VA_ARGS__) :	\
 	 0)
+
+#define OVAT_PRIORITY_LAST 65535
+
+#define OVAT_PRIO(prio) \
+	OVAT_PRIORITY_ ## prio
+
+/**
+ * Run function before main() with high priority.
+ *
+ * @param func
+ *   Constructor function.
+ * @param prio
+ *   Priority number must be above 100.
+ *   Lowest number is the first to run.
+ */
+#define OVAT_INIT_PRIO(func, prio) \
+static void __attribute__((constructor(OVAT_PRIO(prio)), used)) func(void)
+
+/**
+ * Run function before main() with low priority.
+ *
+ * The constructor will be run after prioritized constructors.
+ *
+ * @param func
+ *   Constructor function.
+ */
+#define OVAT_INIT(func) \
+	OVAT_INIT_PRIO(func, LAST)
 
 /**
  * @warning

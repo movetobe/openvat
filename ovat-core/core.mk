@@ -36,8 +36,8 @@ $(CORE_BIN):$(CORE_OBJ)
 	$(CC) -c $(CFLAGS) $< -o $@
 
 install:
-	cp $(CORE_BIN) /usr/bin/
+	cp -rf $(CORE_BIN) /usr/bin/
 
 .PHONY:clean
 clean:
-	rm $(CORE_OBJ) $(CORE_BIN)
+	rm -rf $(CORE_OBJ) $(CORE_BIN)

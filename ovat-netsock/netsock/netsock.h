@@ -1,6 +1,7 @@
 #ifndef NETSOCK_H
 #define NETSOCK_H
 
+#include "ovat-log.h"
 #include "ovat-list.h"
 #include <sys/epoll.h>
 #include <pthread.h>

@@ -2,6 +2,7 @@
 #include "ovat-cannmif.h"
 #include "ovat-ctl.h"
 #include "ovat-netsock-msg.h"
+#include "ovat-log.h"
 #include "CanNm.h"
 
 /*
@@ -51,4 +52,7 @@ ovat_cannmif_command_register(void *aux)
                                 1, 1, ovat_cannmif_network_request, aux);
     ovat_ctl_command_register("cannm/network-release", "CanNm_NetworkRelease [NetworkHandle]",
                                 1, 1, ovat_cannmif_network_release, aux);
+    //OVAT_LOG(INFO, CANNMIF, "command register");
 }
+OVAT_LOG_REGISTER(cannmif_logtype, ovat.cannmif, INFO);
+

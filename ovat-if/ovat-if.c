@@ -6,7 +6,7 @@
 #include "ovat-netsock-msg.h"
 #include "ovat-netsock.h"
 #include "timeval.h"
-
+#include "ovat-log.h"
 #include "Nm.h"
 #include "CanNm.h"
 
@@ -69,6 +69,7 @@ ovat_if_module_mainfunc(void *arg)
 
     while (module->module_loaded) {
         module->ops.mainfunc();
+        OVAT_LOG(INFO, IF, "MainFunction");
         /* sleep */
         ovat_msleep(module->mainfunc_period);
     }
@@ -145,4 +146,6 @@ ovat_if_action_reply(int fd, void *aux, const char *action, const char *ret)
     ovat_netsock_msg_reply(fd, netsock_, &reply);
     ovat_netsock_msg_ack(fd, netsock_);
 }
+
+OVAT_LOG_REGISTER(if_logtype, ovat.if, INFO);
 

@@ -85,6 +85,6 @@ enum ovat_errno {
 #define TYPE_MINIMUM(TYPE) (TYPE_IS_SIGNED(TYPE) ? -TYPE_MAXIMUM(TYPE) - 1 : 0)
 #define TYPE_MAXIMUM(TYPE) \
     ((((TYPE)1 << (TYPE_VALUE_BITS(TYPE) - 1)) - 1) * 2 + 1)
-
+#define OVAT_STR(x) #x
 
 #endif /* OVAT_UTILS_H */

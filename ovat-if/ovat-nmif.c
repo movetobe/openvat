@@ -50,4 +50,8 @@ ovat_nmif_command_register(void *aux)
                                 1, 1, ovat_nmif_network_request, aux);
     ovat_ctl_command_register("nm/network-release", "Nm_NetworkRelease [NetworkHandle]",
                                 1, 1, ovat_nmif_network_release, aux);
+    //OVAT_LOG(INFO, NMIF, "command register");
 }
+
+OVAT_LOG_REGISTER(nmif_logtype, ovat.nmif, INFO);
+

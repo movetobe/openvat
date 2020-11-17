@@ -33,21 +33,21 @@ netsock_class_register(struct netsock_class *new_class)
     int ret = OVAT_EOK;
 
     if (netsock_lookup_class(new_class->type)) {
-        printf("duplicate register netsock class, %s\n", new_class->type);
+        OVAT_LOG(ERR, NETSOCK, "duplicate register netsock class, %s\n", new_class->type);
         ret = -OVAT_EEXIST;
         goto out;
     }
 
     ret = new_class->init() ? new_class->init() : OVAT_EOK;
     if (ret) {
-        printf("new class init error, errno %d\n", ret);
+        OVAT_LOG(ERR, NETSOCK, "new class init error, errno %d\n", ret);
         goto out;
     }
 
     struct netsock_registered_class *rc;
     rc = calloc(1, sizeof(*rc));
     if (!rc) {
-        printf("malloc error\n");
+        OVAT_LOG(ERR, NETSOCK, "malloc error\n");
         ret = -OVAT_ESYSCALL;
         goto out;
     }
@@ -88,14 +88,14 @@ netsock_open(char *name, int conn_type, char *path, char *class_type, struct net
 
     rc = netsock_lookup_class(class_type);
     if (!rc) {
-        printf("unknown sock class type %s\n", class_type);
+        OVAT_LOG(ERR, NETSOCK, "unknown sock class type %s\n", class_type);
         ret = -OVAT_ENOEXIST;
         goto err1;
     }
     
     netsock_ = rc->class->alloc();
     if (!netsock_) {
-        printf("netsock_ alloc error\n");
+        OVAT_LOG(ERR, NETSOCK, "netsock_ alloc error\n");
         ret = -OVAT_ECALL;
         goto err1;
     }
@@ -109,15 +109,15 @@ netsock_open(char *name, int conn_type, char *path, char *class_type, struct net
     INIT_LIST_HEAD(&(netsock_->conn_list));
 
     ret = rc->class->construct(netsock_);
-    if (ret) {
-        printf("netsock construct error, name %s\n", name);
+    if (ret < 0) {
+        OVAT_LOG(ERR, NETSOCK, "netsock construct error, name %s\n", name);
         ret = -OVAT_ECALL;
         goto err2;
     }
 
     ret = ovat_pthread_create(&(netsock_->thread_id), "netsock_events_thread", netsock_loop, (void *)netsock_);
     if (ret < 0) {
-        printf("ovat_pthread_create failed, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "ovat_pthread_create failed, errno %d\n", errno);
         goto err2;
     }
 
@@ -140,18 +140,19 @@ netsock_close(struct netsock *netsock_)
 
     ret = ovat_pthread_join(netsock_->thread_id, NULL);
     if (ret < 0) {
-        printf("pthread join failed, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "pthread join failed, errno %d\n", errno);
     }
 
     ret = netsock_->class->destruct(netsock_);
     if (ret < 0) {
-        printf("netsock destruct failed, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "netsock destruct failed, errno %d\n", errno);
     }
 
     ret = netsock_->class->dealloc(netsock_);
     if (ret < 0) {
-        printf("netsock dealloc failed, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "netsock dealloc failed, errno %d\n", errno);
     }
 
     return ret;
-}
+}
+OVAT_LOG_REGISTER(netsock_logtype, ovat.netsock, INFO);

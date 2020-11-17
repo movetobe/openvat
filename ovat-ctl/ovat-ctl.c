@@ -139,7 +139,7 @@ ovat_ctl_command_register(const char *name, const char *usage, int min_args,
 
     command = calloc(1, sizeof(struct ovat_ctl_command));
     if (command == NULL) {
-        printf("malloc failed\n");
+        OVAT_LOG(INFO, CORE, "malloc failed\n");
         ret = OVAT_ESYSCALL;
         goto err;
     }

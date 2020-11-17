@@ -35,20 +35,20 @@ ovat_netsock_create(char *name, int conn_type,
 
     ret = netsock_initialize();
     if (ret < 0) {
-        printf("netsock initialize failed, path: %s, conn_type: %d, ret: %d\n",
+        OVAT_LOG(ERR, NETSOCK, "netsock initialize failed, path: %s, conn_type: %d, ret: %d\n",
                 path, conn_type, ret);
         goto err;
     }
 
     ret = netsock_unix_sock_register(cb);
     if (ret < 0) {
-        printf("netsock unix sock register failed, path: %s, conn_type: %d, ret: %d\n",
+        OVAT_LOG(ERR, NETSOCK, "netsock unix sock register failed, path: %s, conn_type: %d, ret: %d\n",
                 path, conn_type, ret);
         goto err;
     }
     ret =  netsock_open(name, conn_type, path, "unix_sock", netsockp);
     if (ret < 0) {
-        printf("netsock open failed, path: %s, conn_type: %d, ret: %d\n",
+        OVAT_LOG(ERR, NETSOCK, "netsock open failed, path: %s, conn_type: %d, ret: %d\n",
                 path, conn_type, ret);
         goto err;
     }
@@ -69,7 +69,7 @@ ovat_netsock_destroy(struct netsock *netsock_)
     int ret = netsock_close(netsock_);
 
     if (ret <0) {
-        printf("netsock close failed, ret: %d\n", ret);
+        OVAT_LOG(ERR, NETSOCK, "netsock close failed, ret: %d\n", ret);
         goto err;
     }
 

@@ -1,5 +1,6 @@
 #include "ovat-utils.h"
 #include "ovat-pthread.h"
+#include "ovat-log.h"
 #include <unistd.h>
 
 int
@@ -11,19 +12,19 @@ ovat_pthread_create(pthread_t *thread_id, const char *thread_name,
 
     ret = pthread_attr_init(&attr);
     if (ret < 0) {
-        printf("pthread_attr_init failed, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "pthread_attr_init failed, errno %d\n", errno);
         goto err;
     }
 
     ret = pthread_create(thread_id, &attr, start_func, arg);
     if (ret < 0) {
-        printf("pthread_create failed, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "pthread_create failed, errno %d\n", errno);
         goto err;
     }
 
     ret = pthread_setname_np(*thread_id, thread_name);
     if (ret < 0) {
-        printf("pthread set name failed, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "pthread set name failed, errno %d\n", errno);
         goto err;
     }
 
@@ -41,23 +42,23 @@ ovat_pthread_create_detach(pthread_t *thread_id, const char *thread_name,
 
     ret = pthread_attr_init(&attr);
     if (ret < 0) {
-        printf("pthread_attr_init failed, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "pthread_attr_init failed, errno %d\n", errno);
         goto err;
     }
 
     ret = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
     if (ret < 0) {
-        printf("pthread set detachstate failed, errno%d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "pthread set detachstate failed, errno%d\n", errno);
         goto err;
     }
     ret = pthread_create(thread_id, &attr, start_func, arg);
     if (ret < 0) {
-        printf("pthread_create failed, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "pthread_create failed, errno %d\n", errno);
         goto err;
     }
     ret = pthread_setname_np(*thread_id, thread_name);
     if (ret < 0) {
-        printf("pthread set name failed, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "pthread set name failed, errno %d\n", errno);
         goto err;
     }
 
@@ -74,7 +75,7 @@ ovat_pthread_join(pthread_t thread_id, void **retval)
 
     ret = pthread_join(thread_id, retval);
     if (ret < 0) {
-        printf("pthread join failed, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "pthread join failed, errno %d\n", errno);
         goto err;
     }
 

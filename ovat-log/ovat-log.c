@@ -12,16 +12,19 @@
 #include <regex.h>
 #include <fnmatch.h>
 #include <ctype.h>
+#include <linux/limits.h>
 
 #include <sys/types.h>
 #include <syslog.h>
 #include <sys/queue.h>
+#include <sys/stat.h>
 
 #include "ovat-log.h"
 #include "ovat-utils.h"
 #include "dynamic-string.h"
 #include "timeval.h"
 
+#define OVAT_LOG_FILE_MAX 2000000 /* 2MB */
 struct ovat_log_dynamic_type {
 	const char *name;
 	uint32_t loglevel;
@@ -32,6 +35,7 @@ static struct ovat_logs {
 	uint32_t type;  /**< Bitfield with enabled logs. */
 	uint32_t level; /**< Log level. */
 	FILE *file;     /**< Output file set by ovat_openlog_stream, or NULL. */
+    char file_path[PATH_MAX];
 	size_t dynamic_types_len;
 	struct ovat_log_dynamic_type *dynamic_types;
 } ovat_logs = {
@@ -58,23 +62,6 @@ static struct ovat_opt_loglevel_list opt_loglevel_list =
 
 /* Stream to use for logging if ovat_logs.file is NULL */
 static FILE *default_log_stream;
-
-/**
- * This global structure stores some information about the message
- * that is currently being processed by one lcore
- */
-struct ovat_log_cur_msg {
-	uint32_t loglevel; /**< log level - see ovat_log.h */
-	uint32_t logtype;  /**< log type  - see ovat_log.h */
-};
-
- /* per module */
-static struct ovat_log_cur_msg log_cur_msg[] = {
-    {OVAT_LOGTYPE_CORE, OVAT_LOG_DEBUG},
-    {OVAT_LOGTYPE_APPCTL, OVAT_LOG_DEBUG},
-    {OVAT_LOGTYPE_NM, OVAT_LOG_DEBUG},
-    {OVAT_LOGTYPE_CANNM, OVAT_LOG_DEBUG},
-};
 
 /* Change the stream that will be used by logging system */
 int
@@ -245,18 +232,6 @@ int ovat_log_save_pattern(const char *pattern, int priority)
 	return ovat_log_save_level(priority, NULL, pattern);
 }
 
-/* get the current loglevel for the message being processed */
-int ovat_log_cur_msg_loglevel(void)
-{
-	return log_cur_msg[0].loglevel;
-}
-
-/* get the current logtype for the message being processed */
-int ovat_log_cur_msg_logtype(void)
-{
-	return log_cur_msg[0].logtype;
-}
-
 static int
 ovat_log_lookup(const char *name)
 {
@@ -352,10 +327,13 @@ struct logtype {
 };
 
 static const struct logtype logtype_strings[] = {
-	{OVAT_LOGTYPE_CORE,       "ovat.core"},
-	{OVAT_LOGTYPE_APPCTL,     "ovat.appctl"},
-	{OVAT_LOGTYPE_NM,         "ovat.nm"},
-	{OVAT_LOGTYPE_CANNM,      "ovat.cannm"},
+    {OVAT_LOGTYPE_CORE, "ovat.core"},
+    {OVAT_LOGTYPE_NETSOCK, "ovat.netsock"},
+    {OVAT_LOGTYPE_IF, "ovat.if"},
+    {OVAT_LOGTYPE_NMIF, "ovat.nmif"},
+    {OVAT_LOGTYPE_CANNMIF, "ovat.cannmif"},
+    {OVAT_LOGTYPE_NMSTUB, "ovat.nmstub"},
+    {OVAT_LOGTYPE_CANNMSTUB, "ovat.cannmstub"},
 };
 
 static const char *
@@ -403,7 +381,7 @@ ovat_log_dump(FILE *f)
 	}
 }
 
-const char *ovat_log_pattern = "%D{%Y-%m-%dT%H:%M:%S.###Z}|%c%T|%p|%m";
+const char *ovat_log_pattern = "%D{%Y-%m-%dT%H:%M:%S.###Z}|%c|%p|%m";
 
 /* Similar to strlcpy() from OpenBSD, but it never reads more than 'size - 1'
  * bytes from 'src' and doesn't return anything. */
@@ -444,7 +422,6 @@ format_log_message(const char *module, uint32_t level,
 
     ds_clear(s);
     for (p = pattern; *p != '\0'; ) {
-        const char *subprogram_name;
         enum { LEFT, RIGHT } justify = RIGHT;
         int pad = ' ';
         size_t length, field, used;
@@ -507,12 +484,6 @@ format_log_message(const char *module, uint32_t level,
         case 'P':
             ds_put_format(s, "%ld", (long int) getpid());
             break;
-        case 'T':
-            subprogram_name = "OVAT";
-            if (subprogram_name[0]) {
-                ds_put_format(s, "(%s)", subprogram_name);
-            }
-            break;
         default:
             ds_put_char(s, p[-1]);
             break;
@@ -529,6 +500,7 @@ format_log_message(const char *module, uint32_t level,
             }
         }
     }
+    ds_put_char(s, '\n');
 }
 
 
@@ -541,19 +513,26 @@ ovat_vlog(uint32_t level, uint32_t logtype, const char *format, va_list ap)
 {
 	FILE *f = ovat_log_get_stream();
 	int ret;
+    struct stat st;
+    char new_path[PATH_MAX + sizeof(long long int)] = {0};
 
 	if (logtype >= ovat_logs.dynamic_types_len)
 		return -1;
 	if (!ovat_log_can_log(logtype, level))
 		return 0;
-
-	/* save loglevel and logtype in a global per-lcore variable */
-	log_cur_msg[0].loglevel = level;
-	log_cur_msg[0].logtype = logtype;
+    stat(ovat_logs.file_path, &st);
+    snprintf(new_path, PATH_MAX + sizeof(long long int), "%s.%lld", ovat_logs.file_path, time_wall_msec());
+    if (st.st_size > OVAT_LOG_FILE_MAX) {
+        /* log file overflow, store/close old one and open a new one */
+        (void)rename(ovat_logs.file_path, new_path);
+        fclose(f);
+        f = fopen(ovat_logs.file_path, "w+");
+        ovat_openlog_stream(f);
+    }
 
     struct ds s;
     ds_init(&s);
-    format_log_message(logtype_strings[log_cur_msg[0].logtype].logtype, log_cur_msg[0].loglevel,
+    format_log_message(logtype_strings[logtype].logtype, level,
         ovat_log_pattern, format, ap, &s);
 
 	ret = vfprintf(f, s.string, ap);
@@ -580,42 +559,13 @@ ovat_log(uint32_t level, uint32_t logtype, const char *format, ...)
 	return ret;
 }
 
-/*
- * default log function
- */
-static ssize_t
-console_log_write(void *c, const char *buf, size_t size)
+void
+ovat_log_init(const char *path)
 {
-	ssize_t ret;
+    FILE *fp;
 
-	/* write on stdout */
-	ret = fwrite(buf, 1, size, stdout);
-	fflush(stdout);
-
-	/* Syslog error levels are from 0 to 7, so subtract 1 to convert */
-	syslog(ovat_log_cur_msg_loglevel() - 1, "%.*s", (int)size, buf);
-
-	return ret;
-}
-
-static cookie_io_functions_t console_log_func = {
-	.write = console_log_write,
-};
-
-
-int
-ovat_log_init(const char *id, int facility)
-{
-	FILE *log_stream;
-
-	log_stream = fopencookie(NULL, "w+", console_log_func);
-	if (log_stream == NULL)
-		return -1;
-
-	openlog(id, LOG_NDELAY | LOG_PID, facility);
-
-	default_log_stream = log_stream;
-
-	return 0;
+    snprintf(ovat_logs.file_path, PATH_MAX, "%s", path);
+    fp = fopen(ovat_logs.file_path, "w+");
+    ovat_openlog_stream(fp);
 }
 

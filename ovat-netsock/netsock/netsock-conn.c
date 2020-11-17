@@ -12,7 +12,7 @@ netsock_conn_construct(int fd, int (*handler)(void *ctx), void *context)
     struct netsock *netsock = (struct netsock *) context;
 
     if (new_conn == NULL) {
-        printf("netsock_conn_construct: malloc error, errno %d\n", errno);
+        OVAT_LOG(ERR, NETSOCK, "netsock_conn_construct: malloc error, errno %d\n", errno);
         ret = -OVAT_ESYSCALL;
         goto out;
     }
@@ -24,7 +24,7 @@ netsock_conn_construct(int fd, int (*handler)(void *ctx), void *context)
 
     ret = netsock_epoll_ops(netsock->epollfd, EPOLL_CTL_ADD, fd, new_conn);
     if (ret < 0) {
-        printf("add new connection to epoll failed, errno %d\n", ret);
+        OVAT_LOG(ERR, NETSOCK, "add new connection to epoll failed, errno %d\n", ret);
         goto out;
     }
 
@@ -43,7 +43,7 @@ netsock_conn_destruct(int fd, int epollfd, struct list_head *list)
         if (conn->fd == fd) {
             ret = netsock_epoll_ops(epollfd, EPOLL_CTL_DEL, fd, conn);
             if (ret < 0) {
-                printf("del connection from epoll failed %d\n", ret);
+                OVAT_LOG(ERR, NETSOCK, "del connection from epoll failed %d\n", ret);
                 ret = -1;
                 goto out;
             }
