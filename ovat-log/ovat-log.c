@@ -381,7 +381,7 @@ ovat_log_dump(FILE *f)
 	}
 }
 
-const char *ovat_log_pattern = "%D{%Y-%m-%dT%H:%M:%S.###Z}|%c|%p|%m";
+const char *ovat_log_pattern = "%D{%Y-%m-%dT%H:%M:%S.###Z}|%c|%p|%f%m";
 
 /* Similar to strlcpy() from OpenBSD, but it never reads more than 'size - 1'
  * bytes from 'src' and doesn't return anything. */
@@ -413,8 +413,8 @@ fetch_braces(const char *p, const char *def, char *out, size_t out_size)
 
 static void
 format_log_message(const char *module, uint32_t level,
-                   const char *pattern, const char *message,
-                   va_list args_, struct ds *s)
+                    const char *func_name, const char *pattern,
+                    const char *message, va_list args_, struct ds *s)
 {
     char tmp[128];
     va_list args;
@@ -465,6 +465,9 @@ format_log_message(const char *module, uint32_t level,
             tmp[sizeof tmp - 1] = '\0';
             ds_put_cstr(s, tmp);
             break;
+        case 'f':
+            ds_put_format(s, "%s", func_name);
+            break;
         case 'm':
             /* Format user-supplied log message and trim trailing new-lines. */
             length = s->length;
@@ -509,7 +512,8 @@ format_log_message(const char *module, uint32_t level,
  * defined by the previous call to ovat_openlog_stream().
  */
 int
-ovat_vlog(uint32_t level, uint32_t logtype, const char *format, va_list ap)
+ovat_vlog(uint32_t level, uint32_t logtype,
+            const char *func_name, const char *format, va_list ap)
 {
 	FILE *f = ovat_log_get_stream();
 	int ret;
@@ -532,7 +536,7 @@ ovat_vlog(uint32_t level, uint32_t logtype, const char *format, va_list ap)
 
     struct ds s;
     ds_init(&s);
-    format_log_message(logtype_strings[logtype].logtype, level,
+    format_log_message(logtype_strings[logtype].logtype, level, func_name,
         ovat_log_pattern, format, ap, &s);
 
 	ret = vfprintf(f, s.string, ap);
@@ -548,13 +552,13 @@ ovat_vlog(uint32_t level, uint32_t logtype, const char *format, va_list ap)
  * No need to check level here, done by ovat_vlog().
  */
 int
-ovat_log(uint32_t level, uint32_t logtype, const char *format, ...)
+ovat_log(uint32_t level, uint32_t logtype, const char *func_name, const char *format, ...)
 {
 	va_list ap;
 	int ret;
 
 	va_start(ap, format);
-	ret = ovat_vlog(level, logtype, format, ap);
+	ret = ovat_vlog(level, logtype, func_name, format, ap);
 	va_end(ap);
 	return ret;
 }

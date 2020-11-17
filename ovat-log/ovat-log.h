@@ -205,7 +205,8 @@ void ovat_log_dump(FILE *f);
  *   - 0: Success.
  *   - Negative on error.
  */
-int ovat_log(uint32_t level, uint32_t logtype, const char *format, ...);
+int ovat_log(uint32_t level, uint32_t logtype,
+            const char *func_name, const char *format, ...);
 //	__ovat_format_printf(3, 4);
 
 /**
@@ -234,7 +235,8 @@ int ovat_log(uint32_t level, uint32_t logtype, const char *format, ...);
  *   - 0: Success.
  *   - Negative on error.
  */
-int ovat_vlog(uint32_t level, uint32_t logtype, const char *format, va_list ap);
+int ovat_vlog(uint32_t level, uint32_t logtype,
+                const char *func_name, const char *format, va_list ap);
 //	__ovat_format_printf(3, 0);
 
 void ovat_log_init(const char *path);
@@ -260,7 +262,7 @@ void ovat_log_init(const char *path);
  */
 #define OVAT_LOG(l, t, ...)					\
 	 ovat_log(OVAT_LOG_ ## l,					\
-		 OVAT_LOGTYPE_ ## t, "%s: %s", __func__, __VA_ARGS__)
+		 OVAT_LOGTYPE_ ## t, __func__, ": " __VA_ARGS__)
 
 /**
  * Generates a log message for data path.
