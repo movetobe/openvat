@@ -5,7 +5,7 @@
 
 #define OVAT_NETSOCK_MSG_ACK "OVAT_NETSOCK_MSG_ACK"
 
-#define OVAT_NETSOCK_MSG_MAX_ARGC 6
+#define OVAT_NETSOCK_MSG_MAX_ARGC 10
 #define OVAT_NETSOCK_MSG_MAX_ARGV_LEN 64
 #define OVAT_NETSOCK_MSG_RESV (NETSOCK_UNIX_SOCK_MSG_BUF_LEN \
                                - sizeof(int) \

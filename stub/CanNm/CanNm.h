@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "Common_Type.h"
+#include "StandardTypes.h"
 
 typedef struct CanNm_ConfigType {
     int enabled;
