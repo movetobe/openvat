@@ -248,7 +248,7 @@ ovat_nmif_command_register(void *aux)
     ovat_ctl_command_register("nm/enable-communication", "Nm_EnableCommunication [NetworkHandle]",
                                 1, 1, ovat_nmif_enable_communication, aux);
     ovat_ctl_command_register("nm/set-userdata", "Nm_SetUserData [NetworkHandle] [UserData]",
-                                9, 9, ovat_nmif_set_userdata, aux);
+                                7, 9, ovat_nmif_set_userdata, aux);
     ovat_ctl_command_register("nm/get-userdata", "Nm_GetUserData [NetworkHandle]",
                                 1, 1, ovat_nmif_get_userdata, aux);
     ovat_ctl_command_register("nm/get-pdudata", "Nm_GetPduData [NetworkHandle]",
