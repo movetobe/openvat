@@ -43,7 +43,7 @@ Std_ReturnType Nm_EnableCommunication(NetworkHandleType NetworkHandle)
 Std_ReturnType Nm_SetUserData(NetworkHandleType NetworkHandle,
                                     const uint8* nmUserDataPtr)
 {
-    OVAT_LOG(INFO, NMSTUB, "stub Nm_SetUserData, %u, userdata: 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x\n",
+    OVAT_LOG(INFO, NMSTUB, "stub Nm_SetUserData, %u, userdata: 0x%02x %02x %02x %02x %02x %02x %02x %02x",
                 NetworkHandle, nmUserDataPtr[0], nmUserDataPtr[1], nmUserDataPtr[2],
                 nmUserDataPtr[3], nmUserDataPtr[4], nmUserDataPtr[5],
                 nmUserDataPtr[6], nmUserDataPtr[7]);

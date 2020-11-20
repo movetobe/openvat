@@ -2,6 +2,7 @@
 #include "ovat-nmif.h"
 #include "ovat-ctl.h"
 #include "ovat-netsock-msg.h"
+#include "dynamic-string.h"
 #include "Nm.h"
 
 static void
@@ -92,32 +93,45 @@ static void
 ovat_nmif_get_userdata(int fd, void *msg, void *aux)
 {
     struct ovat_netsock_msg *command_msg = (struct ovat_netsock_msg *)msg;
-    uint64_t userdata = 0;
-    char reply[24] = {0};
+    uint8 userdata[8] = {0};
+    struct ds s;
 
-    if (Nm_GetUserData(atoi(command_msg->argv[2]), (uint8 *)&userdata) != E_OK) {
+    if (Nm_GetUserData(atoi(command_msg->argv[2]), userdata) != E_OK) {
         ovat_if_action_reply(fd, aux, "Call Nm_GetUserData()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    snprintf(reply, 24, "0x%lx", userdata);
-    OVAT_LOG(INFO, NMIF, "NetworkHandle %s, userdata 0x%x\n", command_msg->argv[2], userdata);
-    ovat_if_action_reply(fd, aux, "Call Nm_GetUserData()", reply);
+
+    OVAT_LOG(INFO, NMIF, "NetworkHandle %s, userdata 0x%02x %02x %02x %02x %02x %02x %02x %02x",
+                command_msg->argv[2], userdata[0], userdata[1], userdata[2], userdata[3],
+                userdata[4], userdata[5], userdata[6], userdata[7]);
+    ds_init(&s);
+    ds_put_format(&s, "userdata: 0x%02x %02x %02x %02x %02x %02x %02x %02x",
+                    userdata[0], userdata[1], userdata[2], userdata[3],
+                    userdata[4], userdata[5], userdata[6], userdata[7]);
+    ovat_if_action_reply(fd, aux, "Call Nm_GetUserData()", s.string);
+    ds_destroy(&s);
 }
 
 static void
 ovat_nmif_get_pdudata(int fd, void *msg, void *aux)
 {
     struct ovat_netsock_msg *command_msg = (struct ovat_netsock_msg *)msg;
-    uint64_t pdudata = 0;
-    char reply[24] = {0};
+    uint8 pdudata[8] = {0};
+    struct ds s;
 
-    if (Nm_GetPduData(atoi(command_msg->argv[2]), (uint8 *)&pdudata) != E_OK) {
+    if (Nm_GetPduData(atoi(command_msg->argv[2]), pdudata) != E_OK) {
         ovat_if_action_reply(fd, aux, "Call Nm_GetPduData()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    snprintf(reply, 24, "0x%lx", pdudata);
-    OVAT_LOG(INFO, NMIF, "NetworkHandle %s, userdata 0x%x\n", command_msg->argv[2], pdudata);
-    ovat_if_action_reply(fd, aux, "Call Nm_GetPduData()", reply);
+    OVAT_LOG(INFO, NMIF, "NetworkHandle %s, pdudata 0x%02x %02x %02x %02x %02x %02x %02x %02x",
+                    command_msg->argv[2], pdudata[0], pdudata[1], pdudata[2], pdudata[3],
+                    pdudata[4], pdudata[5], pdudata[6], pdudata[7]);
+    ds_init(&s);
+    ds_put_format(&s, "pdudata: 0x%02x %02x %02x %02x %02x %02x %02x %02x",
+                pdudata[0], pdudata[1], pdudata[2], pdudata[3],
+                pdudata[4], pdudata[5], pdudata[6], pdudata[7]);
+    ovat_if_action_reply(fd, aux, "Call Nm_GetPduData()", s.string);
+    ds_destroy(&s);
 }
 
 static void
@@ -137,15 +151,17 @@ ovat_nmif_get_nodeid(int fd, void *msg, void *aux)
 {
     struct ovat_netsock_msg *command_msg = (struct ovat_netsock_msg *)msg;
     uint8_t nodeid = 0;
-    char reply[2] = {0};
+    struct ds s;
 
     if (Nm_GetNodeIdentifier(atoi(command_msg->argv[2]), (uint8 *)&nodeid) != E_OK) {
         ovat_if_action_reply(fd, aux, "Call Nm_GetNodeIdentifier()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    snprintf(reply, 2, "%u", nodeid);
+    ds_init(&s);
+    ds_put_format(&s, "nodeid: %u", nodeid);
     OVAT_LOG(INFO, NMIF, "NetworkHandle %s, nodeid 0x%x\n", command_msg->argv[2], nodeid);
-    ovat_if_action_reply(fd, aux, "Call Nm_GetNodeIdentifier()", reply);
+    ovat_if_action_reply(fd, aux, "Call Nm_GetNodeIdentifier()", s.string);
+    ds_destroy(&s);
 }
 
 static void
@@ -153,15 +169,18 @@ ovat_nmif_get_localnodeid(int fd, void *msg, void *aux)
 {
     struct ovat_netsock_msg *command_msg = (struct ovat_netsock_msg *)msg;
     uint8_t nodeid = 0;
-    char reply[2] = {0};
+    struct ds s;
 
     if (Nm_GetLocalNodeIdentifier(atoi(command_msg->argv[2]), (uint8 *)&nodeid) != E_OK) {
         ovat_if_action_reply(fd, aux, "Call Nm_GetLocalNodeIdentifier()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    snprintf(reply, 2, "%u", nodeid);
+
+    ds_init(&s);
+    ds_put_format(&s, "nodeid: %u", nodeid);
     OVAT_LOG(INFO, NMIF, "NetworkHandle %s, nodeid 0x%x\n", command_msg->argv[2], nodeid);
-    ovat_if_action_reply(fd, aux, "Call Nm_GetLocalNodeIdentifier()", reply);
+    ovat_if_action_reply(fd, aux, "Call Nm_GetLocalNodeIdentifier()", s.string);
+    ds_destroy(&s);
 }
 
 static void
@@ -169,15 +188,17 @@ ovat_nmif_check_remotesleepind(int fd, void *msg, void *aux)
 {
     struct ovat_netsock_msg *command_msg = (struct ovat_netsock_msg *)msg;
     boolean ind = 0;
-    char reply[2] = {0};
+    struct ds s;
 
     if (Nm_CheckRemoteSleepIndication(atoi(command_msg->argv[2]), (boolean *)&ind) != E_OK) {
         ovat_if_action_reply(fd, aux, "Call Nm_CheckRemoteSleepIndication()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    snprintf(reply, 2, "%u", ind);
+    ds_init(&s);
+    ds_put_format(&s, "ind: %u", ind);
     OVAT_LOG(INFO, NMIF, "NetworkHandle %s, Sleep Indication %u\n", command_msg->argv[2], ind);
-    ovat_if_action_reply(fd, aux, "Call Nm_CheckRemoteSleepIndication()", reply);
+    ovat_if_action_reply(fd, aux, "Call Nm_CheckRemoteSleepIndication()", s.string);
+    ds_destroy(&s);
 }
 
 static void
@@ -186,27 +207,31 @@ ovat_nmif_get_state(int fd, void *msg, void *aux)
     struct ovat_netsock_msg *command_msg = (struct ovat_netsock_msg *)msg;
     Nm_StateType state = NM_STATE_BUS_SLEEP;
     Nm_ModeType mode = NM_MODE_BUS_SLEEP;
-    char reply[24] = {0};
+    struct ds s;
 
     if (Nm_GetState(atoi(command_msg->argv[2]), &state, &mode) != E_OK) {
         ovat_if_action_reply(fd, aux, "Call Nm_GetState()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    snprintf(reply, 24, "Mode %u, State %u", mode, state);
+    ds_init(&s);
+    ds_put_format(&s, "Mode: %u, State: %u", mode, state);
     OVAT_LOG(INFO, NMIF, "NetworkHandle %s, Mode %u, State %u\n", command_msg->argv[2], mode, state);
-    ovat_if_action_reply(fd, aux, "Call Nm_GetState()", reply);
+    ovat_if_action_reply(fd, aux, "Call Nm_GetState()", s.string);
+    ds_destroy(&s);
 }
 
 static void
 ovat_nmif_get_versioninfo(int fd, void *msg, void *aux)
 {
     Std_VersionInfoType version;
-    char reply[24] = {0};
+    struct ds s;
 
     Nm_GetVersionInfo(&version);
-    snprintf(reply, 24, "Major %u, Minor %u", version.major_version, version.minor_version);
+    ds_init(&s);
+    ds_put_format(&s, "Major: %u, Minor: %u", version.major_version, version.minor_version);
     OVAT_LOG(INFO, NMIF, "Major %u, Minor %u\n", version.major_version, version.minor_version);
-    ovat_if_action_reply(fd, aux, "Call Nm_GetVersionInfo()", reply);
+    ovat_if_action_reply(fd, aux, "Call Nm_GetVersionInfo()", s.string);
+    ds_destroy(&s);
 }
 
 void
