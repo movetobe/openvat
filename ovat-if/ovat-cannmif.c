@@ -81,7 +81,7 @@ ovat_cannmif_set_userdata(int fd, void *msg, void *aux)
         ovat_if_action_reply(fd, aux, "Call CanNm_SetUserData()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    OVAT_LOG(INFO, CANNMIF, "NetworkHandle %s, userdata 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",
+    OVAT_LOG(INFO, CANNMIF, "NetworkHandle %s, userdata 0x%s %s %s %s %s %s %s %s\n",
                                     command_msg->argv[2], command_msg->argv[3],
                                     command_msg->argv[4], command_msg->argv[5],
                                     command_msg->argv[6], command_msg->argv[7],
@@ -131,7 +131,7 @@ ovat_cannmif_transmit(int fd, void *msg, void *aux)
         ovat_if_action_reply(fd, aux, "Call CanNm_Transmit()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    OVAT_LOG(INFO, CANNMIF, "TxPduId %s, userdata 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",
+    OVAT_LOG(INFO, CANNMIF, "TxPduId %s, userdata 0x%s %s %s %s %s %s %s %s\n",
                                     command_msg->argv[2], command_msg->argv[3],
                                     command_msg->argv[4], command_msg->argv[5],
                                     command_msg->argv[6], command_msg->argv[7],
@@ -258,7 +258,6 @@ ovat_cannmif_request_bussync(int fd, void *msg, void *aux)
     ovat_if_action_reply(fd, aux, "Call CanNm_RequestBusSynchronization()", OVAT_IF_ACTION_OK);
 }
 
-
 static void
 ovat_cannmif_check_remotesleepind(int fd, void *msg, void *aux)
 {
@@ -289,6 +288,76 @@ ovat_cannmif_set_sleepreadybit(int fd, void *msg, void *aux)
     OVAT_LOG(INFO, CANNMIF, "NetworkHandle %s, sleep ready bit %s",
                                     command_msg->argv[2], command_msg->argv[3]);
     ovat_if_action_reply(fd, aux, "Call CanNm_SetSleepReadyBit()", OVAT_IF_ACTION_OK);
+}
+
+static void
+ovat_cannmif_tx_confirmation(int fd, void *msg, void *aux)
+{
+    struct ovat_netsock_msg *command_msg = (struct ovat_netsock_msg *)msg;
+
+    CanNm_TxConfirmation(atoi(command_msg->argv[2]), atoi(command_msg->argv[3]));
+    OVAT_LOG(INFO, CANNMIF, "TxPduId %s, result %s", command_msg->argv[2], command_msg->argv[3]);
+    ovat_if_action_reply(fd, aux, "Call CanNm_TxConfirmation()", OVAT_IF_ACTION_OK);
+}
+
+static void
+ovat_cannmif_rx_indication(int fd, void *msg, void *aux)
+{
+    struct ovat_netsock_msg *command_msg = (struct ovat_netsock_msg *)msg;
+    uint8 pdu[8] = {0};
+    PduInfoType pduinfo;
+    int i = 0;
+
+    for (i = 0; i < 8; i++) {
+        pdu[i] = strtol(command_msg->argv[3 + i], NULL, 16);
+    }
+
+    pduinfo.SduDataPtr = pdu;
+    pduinfo.SduLength = 8;
+    CanNm_RxIndication(atoi(command_msg->argv[2]), &pduinfo);
+    OVAT_LOG(INFO, CANNMIF, "RxPduId %s, pdu 0x%s %s %s %s %s %s %s %s\n",
+                                    command_msg->argv[2], command_msg->argv[3],
+                                    command_msg->argv[4], command_msg->argv[5],
+                                    command_msg->argv[6], command_msg->argv[7],
+                                    command_msg->argv[8], command_msg->argv[9],
+                                    command_msg->argv[10]);
+    ovat_if_action_reply(fd, aux, "Call CanNm_RxIndication()", OVAT_IF_ACTION_OK);
+}
+
+static void
+ovat_cannmif_confirm_pnavail(int fd, void *msg, void *aux)
+{
+    struct ovat_netsock_msg *command_msg = (struct ovat_netsock_msg *)msg;
+
+    CanNm_ConfirmPnAvailability(atoi(command_msg->argv[2]));
+    ovat_if_action_reply(fd, aux, "Call CanNm_ConfirmPnAvailability()", OVAT_IF_ACTION_OK);
+}
+
+static void
+ovat_cannmif_trigger_transmit(int fd, void *msg, void *aux)
+{
+    struct ovat_netsock_msg *command_msg = (struct ovat_netsock_msg *)msg;
+    uint8 pdu[8] = {0};
+    PduInfoType pduinfo;
+    int i = 0;
+
+    for (i = 0; i < 8; i++) {
+        pdu[i] = strtol(command_msg->argv[3 + i], NULL, 16);
+    }
+
+    pduinfo.SduDataPtr = pdu;
+    pduinfo.SduLength = 8;
+    if (CanNm_TriggerTransmit(atoi(command_msg->argv[2]), &pduinfo) != E_OK) {
+        ovat_if_action_reply(fd, aux, "Call CanNm_TriggerTransmit()", OVAT_IF_ACTION_NOT_OK);
+        return;
+    }
+    OVAT_LOG(INFO, CANNMIF, "TxPduId %s, pdu 0x%s %s %s %s %s %s %s %s\n",
+                                    command_msg->argv[2], command_msg->argv[3],
+                                    command_msg->argv[4], command_msg->argv[5],
+                                    command_msg->argv[6], command_msg->argv[7],
+                                    command_msg->argv[8], command_msg->argv[9],
+                                    command_msg->argv[10]);
+    ovat_if_action_reply(fd, aux, "Call CanNm_TriggerTransmit()", OVAT_IF_ACTION_OK);
 }
 
 void
@@ -328,6 +397,14 @@ ovat_cannmif_command_register(void *aux)
                                 1, 1, ovat_cannmif_check_remotesleepind, aux);
     ovat_ctl_command_register("cannm/set-sleepreadybit", "CanNm_SetSleepReadyBit [nmChannelHandle]",
                                 2, 2, ovat_cannmif_set_sleepreadybit, aux);
+    ovat_ctl_command_register("cannm/tx-confirmation", "CanNm_TxConfirmation [TxPduId] [result]",
+                                2, 2, ovat_cannmif_tx_confirmation, aux);
+    ovat_ctl_command_register("cannm/rx-indication", "CanNm_RxIndication [RxPduId] [pdudata]",
+                                9, 9, ovat_cannmif_rx_indication, aux);
+    ovat_ctl_command_register("cannm/confirm-pnavail", "CanNm_ConfirmPnAvailability [nmChannelHandle]",
+                                1, 1, ovat_cannmif_confirm_pnavail, aux);
+    ovat_ctl_command_register("cannm/trigger-transmit", "CanNm_TriggerTransmit [TxPduId] [pdudata]",
+                                9, 9, ovat_cannmif_trigger_transmit, aux);
 }
 
 OVAT_LOG_REGISTER(cannmif_logtype, ovat.cannmif, INFO);

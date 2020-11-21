@@ -80,7 +80,7 @@ ovat_nmif_set_userdata(int fd, void *msg, void *aux)
         ovat_if_action_reply(fd, aux, "Call Nm_SetUserData()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    OVAT_LOG(INFO, NMIF, "NetworkHandle %s, userdata 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s 0x%s\n",
+    OVAT_LOG(INFO, NMIF, "NetworkHandle %s, userdata 0x%s %s %s %s %s %s %s %s\n",
                                     command_msg->argv[2], command_msg->argv[3],
                                     command_msg->argv[4], command_msg->argv[5],
                                     command_msg->argv[6], command_msg->argv[7],
