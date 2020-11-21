@@ -95,7 +95,7 @@ main(int argc, char *argv[])
     ovat_ctl_command_register("module/unload", "Unload module [name]", 1, 1, ovat_core_module_unload, netsock);
 
     ovat_if_init(netsock);
-    OVAT_LOG(ERR, CORE, "core start\n");
+    OVAT_LOG(INFO, CORE, "ovat-core start\n");
     while (!ovat_core_get_exit()) {
         ovat_netsock_run(netsock);
     }

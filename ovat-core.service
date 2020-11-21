@@ -1,0 +1,5 @@
+unset LD_PRELOAD
+pkill ovat
+MODULES_SO_PATH+=/home/wenjian/automotive/autosar-bsw-modules/CanNm/libcannm.so:/home/wenjian/automotive/autosar-bsw-modules/Nm/libnm.so
+export LD_PRELOAD=$MODULES_SO_PATH
+ovat-core &

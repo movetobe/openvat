@@ -13,14 +13,23 @@ typedef uint8_t boolean;
 typedef uint8_t uint8;
 #endif
 
+#ifndef uint16
+typedef uint16_t uint16;
+#endif
+
+
 #ifndef PduIdType
 typedef uint16_t PduIdType;
+#endif
+
+#ifndef PduLengthType
+typedef uint32_t PduLengthType;
 #endif
 
 typedef struct PduInfo {
     uint8 *SduDataPtr;
     uint8 *MetaDataPtr;
-    uint8 SduLength;
+    PduLengthType SduLength;
 } PduInfoType;
 #endif /* COMSTACKTYPES_H */
 

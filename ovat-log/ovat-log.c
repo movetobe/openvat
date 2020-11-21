@@ -334,6 +334,13 @@ static const struct logtype logtype_strings[] = {
     {OVAT_LOGTYPE_CANNMIF, "ovat.cannmif"},
     {OVAT_LOGTYPE_NMSTUB, "ovat.nmstub"},
     {OVAT_LOGTYPE_CANNMSTUB, "ovat.cannmstub"},
+    {OVAT_LOGTYPE_BSWMSTUB, "ovat.bswmstub"},
+    {OVAT_LOGTYPE_CANIFSTUB, "ovat.canifstub"},
+    {OVAT_LOGTYPE_CANSMSTUB, "ovat.cansmstub"},
+    {OVAT_LOGTYPE_COMSTUB, "ovat.comstub"},
+    {OVAT_LOGTYPE_COMMSTUB, "ovat.commstub"},
+    {OVAT_LOGTYPE_DETSTUB, "ovat.detstub"},
+    {OVAT_LOGTYPE_PDURSTUB, "ovat.pdurstub"},
 };
 
 static const char *
