@@ -38,9 +38,12 @@ main(int argc, char *argv[])
     int i = 0;
     size_t len = 0;
 
-    ovat_netsock_create("ovat-appctl-client", NETSOCK_CONN_TYPE_CLIENT,
+    ret = ovat_netsock_create("ovat-appctl-client", NETSOCK_CONN_TYPE_CLIENT,
                     "/tmp/ovat-ctl-server.sock", &netsock, ovat_appctl_msg_handler);
-
+    if (ret < 0) {
+        printf("ovat-appctl start failed, maybe ovat-core has not been started\n");
+        goto out;
+    }
 
     list_for_each_entry (srv_conn, &(netsock->conn_list), conn_node) {
         if (srv_conn->fd > 0) {
@@ -57,8 +60,11 @@ main(int argc, char *argv[])
     ret = netsock->class->send(srv_conn->fd, netsock, (const void *)&msg, sizeof(msg));
 
     while (!ovat_appctl_exit);
-    ovat_netsock_destroy(netsock);
 
+out:
+    if (netsock) {
+        ovat_netsock_destroy(netsock);
+    }
     return ret;
 }
 

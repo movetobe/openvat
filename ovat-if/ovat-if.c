@@ -140,8 +140,9 @@ ovat_if_action_reply(int fd, void *aux, const char *action, const char *ret)
     struct netsock *netsock_ = (struct netsock *)aux;
 
     memset(&reply, 0, sizeof(struct ovat_netsock_msg));
-    reply.argc = 1;
-    snprintf(reply.argv[0], sizeof(reply.argv[0]), "%s %s", action, ret);
+    reply.argc = 2;
+    snprintf(reply.argv[0], sizeof(reply.argv[0]), "%s", action);
+    snprintf(reply.argv[1], sizeof(reply.argv[1]), "%s", ret);
 
     ovat_netsock_msg_reply(fd, netsock_, &reply);
     ovat_netsock_msg_ack(fd, netsock_);

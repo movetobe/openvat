@@ -58,6 +58,17 @@ out:
     return ret;
 }
 
+void
+netsock_class_unregister(struct netsock_class *new_class)
+{
+    struct netsock_registered_class *rc = netsock_lookup_class(new_class->type);
+    if (rc) {
+        list_del(&(rc->class_node));
+        free(rc);
+    }
+}
+
+
 static void *
 netsock_loop(void *arg)
 {

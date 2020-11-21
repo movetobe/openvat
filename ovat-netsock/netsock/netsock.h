@@ -50,5 +50,5 @@ int netsock_initialize(void);
 int netsock_open(char *name, int conn_type, char *path, char *class_type, struct netsock **netsockp);
 int netsock_close(struct netsock *netsock_);
 int netsock_class_register(struct netsock_class *new_class);
-
+void netsock_class_unregister(struct netsock_class *new_class);
 #endif /* NETSOCK_H */

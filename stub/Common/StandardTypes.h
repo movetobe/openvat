@@ -10,8 +10,11 @@ typedef enum Std_Return {
 } Std_ReturnType;
 
 typedef struct Std_VersionInfo {
-    uint8_t major_version;
-    uint8_t minor_version;
+    uint16 vendorID;
+    uint16 moduleID;
+    uint8 sw_major_version;
+    uint8 sw_minor_version;
+    uint8 sw_patch_version;
 } Std_VersionInfoType;
 
 #endif /* STANDARDTYPES_H */

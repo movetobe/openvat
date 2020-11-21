@@ -228,8 +228,10 @@ ovat_nmif_get_versioninfo(int fd, void *msg, void *aux)
 
     Nm_GetVersionInfo(&version);
     ds_init(&s);
-    ds_put_format(&s, "Major: %u, Minor: %u", version.major_version, version.minor_version);
-    OVAT_LOG(INFO, NMIF, "Major %u, Minor %u\n", version.major_version, version.minor_version);
+    ds_put_format(&s, "VendorID: %u, ModuleID: %u, Major: %u, Minor: %u",
+            version.vendorID, version.moduleID, version.sw_major_version, version.sw_minor_version);
+    OVAT_LOG(INFO, NMIF, "VendorID: %u, ModuleID: %u, Major: %u, Minor: %u",
+            version.vendorID, version.moduleID, version.sw_major_version, version.sw_minor_version);
     ovat_if_action_reply(fd, aux, "Call Nm_GetVersionInfo()", s.string);
     ds_destroy(&s);
 }

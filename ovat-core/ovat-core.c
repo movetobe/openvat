@@ -100,10 +100,12 @@ main(int argc, char *argv[])
         ovat_netsock_run(netsock);
     }
 
-    ovat_netsock_destroy(netsock);
     ovat_if_uninit();
-    ovat_ctl_command_uninit();
 out:
+    if (netsock) {
+        ovat_netsock_destroy(netsock);
+    }
+    ovat_ctl_command_uninit();
     return ret;
 }
 

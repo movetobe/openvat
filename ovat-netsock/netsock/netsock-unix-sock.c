@@ -70,7 +70,6 @@ netsock_unix_sock_accept_conn(void *context)
         OVAT_LOG(ERR, NETSOCK, "netsock_conn_construct error\n");
         goto err;
     }
-    
 err:
     return ret;
 }
@@ -136,7 +135,7 @@ netsock_unix_sock_construct(struct netsock *netsock_)
 
     if (unix_sock->up.conn_type == NETSOCK_CONN_TYPE_SERVER) {
         (void)unlink(netsock_->path);
-    
+
         ret = bind(sockfd, (struct sockaddr *) &sockaddr, sizeof(struct sockaddr_un));
         if (ret < 0) {
             OVAT_LOG(ERR, NETSOCK, "listening socket bind error, errno %d\n", errno);
@@ -197,7 +196,7 @@ netsock_unix_sock_recv(int fd, struct netsock *netsock_, void *msg)
     int ret = 0;
 
     ret = read(fd, msg, NETSOCK_UNIX_SOCK_MSG_BUF_LEN);
-    
+
     return ret;
 }
 
@@ -228,4 +227,9 @@ netsock_unix_sock_register(msg_handler_cb *cb)
 {
     ns_unix_sock.msg_handler = cb;
     return netsock_class_register(&ns_unix_sock);
+}
+void
+netsock_unix_sock_unregister(void)
+{
+    netsock_class_unregister(&ns_unix_sock);
 }

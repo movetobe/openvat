@@ -1,5 +1,21 @@
-unset LD_PRELOAD
-pkill ovat
+#!/bin/bash
+
 MODULES_SO_PATH+=/home/wenjian/automotive/autosar-bsw-modules/CanNm/libcannm.so:/home/wenjian/automotive/autosar-bsw-modules/Nm/libnm.so
-export LD_PRELOAD=$MODULES_SO_PATH
-ovat-core &
+
+if [[ $1 = 'start' ]]; then
+    export LD_PRELOAD=$MODULES_SO_PATH
+    ovat-core &
+    echo 'ovat-core start'
+elif [[ $1 = 'restart' ]]; then
+    kill -9 `pidof ovat-core`
+    unset LD_PRELOAD
+    export LD_PRELOAD=$MODULES_SO_PATH
+    ovat-core &
+    echo 'ovat-core restart'
+elif [[ $1 = 'stop' ]]; then
+    unset LD_PRELOAD
+    pkill ovat-core
+    echo 'ovat-core stop'
+else
+    echo "unknown option, use option start|stop|restart"
+fi

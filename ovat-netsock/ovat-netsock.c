@@ -37,23 +37,26 @@ ovat_netsock_create(char *name, int conn_type,
     if (ret < 0) {
         OVAT_LOG(ERR, NETSOCK, "netsock initialize failed, path: %s, conn_type: %d, ret: %d\n",
                 path, conn_type, ret);
-        goto err;
+        goto err1;
     }
 
     ret = netsock_unix_sock_register(cb);
     if (ret < 0) {
         OVAT_LOG(ERR, NETSOCK, "netsock unix sock register failed, path: %s, conn_type: %d, ret: %d\n",
                 path, conn_type, ret);
-        goto err;
+        goto err1;
     }
     ret =  netsock_open(name, conn_type, path, "unix_sock", netsockp);
     if (ret < 0) {
         OVAT_LOG(ERR, NETSOCK, "netsock open failed, path: %s, conn_type: %d, ret: %d\n",
                 path, conn_type, ret);
-        goto err;
+        goto err2;
     }
 
-err:
+    return ret;
+err2:
+    netsock_unix_sock_unregister();
+err1:
     return ret;
 }
 
