@@ -5,9 +5,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "StandardTypes.h"
-#include "NmStack_types.h"
 
-void void BswM_Nm_CarWakeUpIndication(NetworkHandleType Network);
+void BswM_Nm_CarWakeUpIndication(NetworkHandleType Network);
 
 
 #endif /* BSWM_H */

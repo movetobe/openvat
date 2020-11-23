@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "StandardTypes.h"
-#include "NmStack_types.h"
 
 void ComM_Nm_NetworkStartIndication(NetworkHandleType Channel);
 void ComM_Nm_NetworkMode(NetworkHandleType Channel);

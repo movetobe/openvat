@@ -1,6 +1,6 @@
 BASE_DIR:=$(PWD)
 STUB_DIR:=$(BASE_DIR)/stub
-DIR:=$(STUB_DIR)/Nm
+DIR:=$(STUB_DIR)/CanSM
 INCLUDE_DIRS+=$(STUB_DIR)/Common \
 			  $(BASE_DIR)/ovat-log \
 			  $(BASE_DIR)/utilities \

@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "StandardTypes.h"
-#include "NmStack_types.h"
 
 #ifndef Com_SignalIdType
 typedef uint16_t Com_SignalIdType;

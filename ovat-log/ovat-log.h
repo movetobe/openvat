@@ -28,6 +28,7 @@ enum {
     OVAT_LOGTYPE_COMMSTUB,
     OVAT_LOGTYPE_DETSTUB,
     OVAT_LOGTYPE_PDURSTUB,
+    OVAT_LOGTYPE_MAX
 };
 
 /** First identifier for extended logs */

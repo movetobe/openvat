@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "StandardTypes.h"
-#include "NmStack_types.h"
 
 void CanSM_TxTimeoutException(NetworkHandleType Channel);
 

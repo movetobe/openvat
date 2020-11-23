@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "StandardTypes.h"
-#include "NmStack_types.h"
 
 void PduR_CanNmRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
 void PduR_CanNmTxConfirmation(PduIdType TxPduId, Std_ReturnType result);
