@@ -13,9 +13,8 @@ CORE_DIRS:=$(INCLUDE_DIRS) $(CORE_DIR)
 CORE_BIN:=${CORE_DIR}/ovat-core
 
 CFLAGS+=-g -Wall -fPIC
-LD_LIBRARY_PATH:=$(BASE_DIR)/stub
 
-LFLAGS+=-L$(LD_LIBRARY_PATH) -lcannm-stub -lnm-stub -lbswm-stub -lcansm-stub -lcanif-stub -lpdur-stub -ldet-stub -lcom-stub -lcomm-stub -lpthread
+LFLAGS+=-lcannm-stub -lnm-stub -lbswm-stub -lcansm-stub -lcanif-stub -lpdur-stub -ldet-stub -lcom-stub -lcomm-stub -lpthread
 
 CC:=gcc
 

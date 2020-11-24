@@ -182,7 +182,6 @@ void Nm_CarWakeUpIndication(NetworkHandleType nmChannelHandle)
 
 void Nm_MainFunction(void)
 {
-    OVAT_LOG(DEBUG, NMSTUB, "stub Nm_MainFunction\n");
 }
 
 OVAT_LOG_REGISTER(nmstub_logtype, ovat.nmstub, INFO);

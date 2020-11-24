@@ -388,7 +388,7 @@ ovat_log_dump(FILE *f)
 	}
 }
 
-const char *ovat_log_pattern = "%D{%Y-%m-%dT%H:%M:%S.###Z}|%c|%p|%f%m";
+const char *ovat_log_pattern = "%D{%Y-%m-%dT%H:%M:%S.###Z}|%P|%c|%p|%f%m";
 
 /* Similar to strlcpy() from OpenBSD, but it never reads more than 'size - 1'
  * bytes from 'src' and doesn't return anything. */

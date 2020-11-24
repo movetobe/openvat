@@ -163,7 +163,6 @@ Std_ReturnType CanNm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 
 void CanNm_MainFunction(void)
 {
-    OVAT_LOG(INFO, CANNMSTUB, "stub CanNm_MainFunction\n");
 }
 
 OVAT_LOG_REGISTER(cannmstub_logtype, ovat.cannmstub, INFO);
