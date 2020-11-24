@@ -165,5 +165,6 @@ netsock_close(struct netsock *netsock_)
     }
 
     return ret;
-}
-OVAT_LOG_REGISTER(netsock_logtype, ovat.netsock, INFO);
+}
+
+OVAT_LOG_REGISTER(netsock_logtype, NETSOCK, INFO);

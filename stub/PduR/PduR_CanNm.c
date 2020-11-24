@@ -27,5 +27,5 @@ Std_ReturnType PduR_CanNmTriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfo
 
 }
 
-OVAT_LOG_REGISTER(pdurstub_logtype, ovat.pdurstub, INFO);
+OVAT_LOG_REGISTER(pdurstub_logtype, PDURSTUB, INFO);
 

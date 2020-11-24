@@ -165,5 +165,5 @@ void CanNm_MainFunction(void)
 {
 }
 
-OVAT_LOG_REGISTER(cannmstub_logtype, ovat.cannmstub, INFO);
+OVAT_LOG_REGISTER(cannmstub_logtype, CANNMSTUB, INFO);
 

@@ -7,5 +7,5 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId, const void* SignalDataPtr)
     OVAT_LOG(INFO, COMSTUB, "stub Com_SendSignal, SignalId %u, Data: 0x%02x", SignalId, *data);
 }
 
-OVAT_LOG_REGISTER(comstub_logtype, ovat.comstub, INFO);
+OVAT_LOG_REGISTER(comstub_logtype, COMSTUB, INFO);
 

@@ -148,5 +148,5 @@ ovat_if_action_reply(int fd, void *aux, const char *action, const char *ret)
     ovat_netsock_msg_ack(fd, netsock_);
 }
 
-OVAT_LOG_REGISTER(if_logtype, ovat.if, INFO);
+OVAT_LOG_REGISTER(if_logtype, IF, INFO);
 

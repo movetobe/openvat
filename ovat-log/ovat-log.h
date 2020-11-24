@@ -12,27 +12,16 @@
 #include <sys/queue.h>
 #include "ovat-utils.h"
 
-/* SDK log type */
-enum {
-    OVAT_LOGTYPE_CORE = 0,
-    OVAT_LOGTYPE_NETSOCK,
-    OVAT_LOGTYPE_IF,
-    OVAT_LOGTYPE_NMIF,
-    OVAT_LOGTYPE_CANNMIF,
-    OVAT_LOGTYPE_NMSTUB,
-    OVAT_LOGTYPE_CANNMSTUB,
-    OVAT_LOGTYPE_BSWMSTUB,
-    OVAT_LOGTYPE_CANIFSTUB,
-    OVAT_LOGTYPE_CANSMSTUB,
-    OVAT_LOGTYPE_COMSTUB,
-    OVAT_LOGTYPE_COMMSTUB,
-    OVAT_LOGTYPE_DETSTUB,
-    OVAT_LOGTYPE_PDURSTUB,
-    OVAT_LOGTYPE_MAX
-};
+#define OVAT_LOG_MODULE_NAME 32
 
-/** First identifier for extended logs */
-#define OVAT_LOGTYPE_FIRST_EXT_ID 32
+struct ovat_module_loglevel {
+	/** Next list entry */
+	TAILQ_ENTRY(ovat_module_loglevel) next;
+	/** module name */
+	char name[OVAT_LOG_MODULE_NAME];
+	/** Log level value obtained from the option */
+	uint32_t level;
+};
 
 /* Can't use 0, as it gives compiler warnings */
 #define OVAT_LOG_EMERG    1U  /**< System is unusable.               */
@@ -95,7 +84,7 @@ uint32_t ovat_log_get_global_level(void);
  * @return
  *   0 on success, a negative value if logtype is invalid.
  */
-int ovat_log_get_level(uint32_t logtype);
+int ovat_log_get_level(struct ovat_module_loglevel *module);
 
 /**
  * For a given `logtype`, check if a log with `loglevel` can be printed.
@@ -107,31 +96,7 @@ int ovat_log_get_level(uint32_t logtype);
  * @return
  * Returns 'true' if log can be printed and 'false' if it can't.
  */
-bool ovat_log_can_log(uint32_t logtype, uint32_t loglevel);
-
-/**
- * Set the log level for a given type based on globbing pattern.
- *
- * @param pattern
- *   The globbing pattern identifying the log type.
- * @param level
- *   The level to be set.
- * @return
- *   0 on success, a negative value if level is invalid.
- */
-int ovat_log_set_level_pattern(const char *pattern, uint32_t level);
-
-/**
- * Set the log level for a given type based on regular expression.
- *
- * @param regex
- *   The regular expression identifying the log type.
- * @param level
- *   The level to be set.
- * @return
- *   0 on success, a negative value if level is invalid.
- */
-int ovat_log_set_level_regexp(const char *regex, uint32_t level);
+bool ovat_log_can_log(struct ovat_module_loglevel *module, uint32_t loglevel);
 
 /**
  * Set the log level for a given type.
@@ -143,7 +108,7 @@ int ovat_log_set_level_regexp(const char *regex, uint32_t level);
  * @return
  *   0 on success, a negative value if logtype or level is invalid.
  */
-int ovat_log_set_level(uint32_t logtype, uint32_t level);
+int ovat_log_set_level(struct ovat_module_loglevel *module, uint32_t level);
 
 /**
  * Register a dynamic log type
@@ -157,38 +122,7 @@ int ovat_log_set_level(uint32_t logtype, uint32_t level);
  *   - >0: success, the returned value is the log type identifier.
  *   - (-ENOMEM): cannot allocate memory.
  */
-int ovat_log_register(const char *name);
-
-/**
- * @warning
- * @b EXPERIMENTAL: this API may change without prior notice
- *
- * Register a dynamic log type and try to pick its level from EAL options
- *
- * ovat_log_register() is called inside. If successful, the function tries
- * to search for matching regexp in the list of EAL log level options and
- * pick the level from the last matching entry. If nothing can be applied
- * from the list, the level will be set to the user-defined default value.
- *
- * @param name
- *    Name for the log type to be registered
- * @param level_def
- *    Fallback level to be set if the global list has no matching options
- * @return
- *    - >=0: the newly registered log type
- *    - <0: ovat_log_register() error value
- */
-int ovat_log_register_type_and_pick_level(const char *name, uint32_t level_def);
-
-/**
- * Dump log information.
- *
- * Dump the global level and the registered log types.
- *
- * @param f
- *   The output stream where the dump should be sent.
- */
-void ovat_log_dump(FILE *f);
+void ovat_log_register(const char *name, uint32_t level);
 
 /**
  * Generates a log message.
@@ -213,9 +147,8 @@ void ovat_log_dump(FILE *f);
  *   - 0: Success.
  *   - Negative on error.
  */
-int ovat_log(uint32_t level, uint32_t logtype,
+int ovat_log(uint32_t level, const char *name,
             const char *func_name, const char *format, ...);
-//	__ovat_format_printf(3, 4);
 
 /**
  * Generates a log message.
@@ -243,12 +176,11 @@ int ovat_log(uint32_t level, uint32_t logtype,
  *   - 0: Success.
  *   - Negative on error.
  */
-int ovat_vlog(uint32_t level, uint32_t logtype,
+int ovat_vlog(uint32_t level, const char *name,
                 const char *func_name, const char *format, va_list ap);
-//	__ovat_format_printf(3, 0);
 
 void ovat_log_init(const char *path);
-
+void ovat_log_uninit(void);
 /**
  * Generates a log message.
  *
@@ -270,7 +202,7 @@ void ovat_log_init(const char *path);
  */
 #define OVAT_LOG(l, t, ...)					\
 	 ovat_log(OVAT_LOG_ ## l,					\
-		 OVAT_LOGTYPE_ ## t, __func__, ": " __VA_ARGS__)
+		# t, __func__, ": " __VA_ARGS__)
 
 /**
  * Generates a log message for data path.
@@ -343,10 +275,9 @@ static void __attribute__((constructor(OVAT_PRIO(prio)), used)) func(void)
  *   Log level. A value between EMERG (1) and DEBUG (8).
  */
 #define OVAT_LOG_REGISTER(type, name, level)				\
-int type;								\
 OVAT_INIT(__##type)							\
 {									\
-	type = ovat_log_register_type_and_pick_level(OVAT_STR(name),	\
+	ovat_log_register(OVAT_STR(name),	\
 						    OVAT_LOG_##level);	\
 }
 

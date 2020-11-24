@@ -184,5 +184,5 @@ void Nm_MainFunction(void)
 {
 }
 
-OVAT_LOG_REGISTER(nmstub_logtype, ovat.nmstub, INFO);
+OVAT_LOG_REGISTER(nmstub_logtype, NMSTUB, INFO);
 

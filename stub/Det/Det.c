@@ -19,5 +19,5 @@ Std_ReturnType Det_ReportRuntimeError(uint16 ModuleId, uint8 InstanceId,
     return E_OK;
 }
 
-OVAT_LOG_REGISTER(detstub_logtype, ovat.detstub, INFO);
+OVAT_LOG_REGISTER(detstub_logtype, DETSTUB, INFO);
 

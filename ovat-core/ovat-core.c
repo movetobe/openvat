@@ -106,8 +106,9 @@ out:
         ovat_netsock_destroy(netsock);
     }
     ovat_ctl_command_uninit();
+    ovat_log_uninit();
     return ret;
 }
 
-OVAT_LOG_REGISTER(core_logtype, ovat.core, INFO);
+OVAT_LOG_REGISTER(core_logtype, CORE, INFO);
 

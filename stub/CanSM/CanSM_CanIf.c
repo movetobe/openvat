@@ -7,5 +7,5 @@ void CanSM_TxTimeoutException(NetworkHandleType Channel)
     return;
 }
 
-OVAT_LOG_REGISTER(cansmstub_logtype, ovat.cansmstub, INFO);
+OVAT_LOG_REGISTER(cansmstub_logtype, CANSMSTUB, INFO);
 

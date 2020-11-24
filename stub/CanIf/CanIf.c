@@ -9,5 +9,5 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     return E_OK;
 }
 
-OVAT_LOG_REGISTER(canifstub_logtype, ovat.canifstub, INFO);
+OVAT_LOG_REGISTER(canifstub_logtype, CANIFSTUB, INFO);
 

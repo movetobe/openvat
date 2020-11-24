@@ -407,5 +407,5 @@ ovat_cannmif_command_register(void *aux)
                                 9, 9, ovat_cannmif_trigger_transmit, aux);
 }
 
-OVAT_LOG_REGISTER(cannmif_logtype, ovat.cannmif, INFO);
+OVAT_LOG_REGISTER(cannmif_logtype, CANNMIF, INFO);
 

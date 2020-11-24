@@ -9,6 +9,7 @@
 #define _GNU_SOURCE
 #include <pthread.h>
 #include <sys/types.h>
+#include <sys/queue.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -86,5 +87,13 @@ enum ovat_errno {
 #define TYPE_MAXIMUM(TYPE) \
     ((((TYPE)1 << (TYPE_VALUE_BITS(TYPE) - 1)) - 1) * 2 + 1)
 #define OVAT_STR(x) #x
+
+/* This macro permits both remove and free var within the loop safely.*/
+#ifndef TAILQ_FOREACH_SAFE
+#define TAILQ_FOREACH_SAFE(var, head, field, tvar)		\
+	for ((var) = TAILQ_FIRST((head));			\
+	    (var) && ((tvar) = TAILQ_NEXT((var), field), 1);	\
+	    (var) = (tvar))
+#endif
 
 #endif /* OVAT_UTILS_H */

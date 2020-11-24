@@ -269,5 +269,5 @@ ovat_nmif_command_register(void *aux)
                                 0, 0, ovat_nmif_get_versioninfo, aux);
 }
 
-OVAT_LOG_REGISTER(nmif_logtype, ovat.nmif, INFO);
+OVAT_LOG_REGISTER(nmif_logtype, NMIF, INFO);
 
