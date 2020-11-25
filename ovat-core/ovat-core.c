@@ -27,7 +27,7 @@ ovat_core_module_load(int fd, void *msg, void *aux)
 {
     struct ovat_netsock_msg *load_msg = (struct ovat_netsock_msg *)msg;
 
-    OVAT_LOG(INFO, CORE, "load module %s, period %s\n", load_msg->argv[2], load_msg->argv[3]);
+    OVAT_LOG(INFO, CORE, "load module: %s, period: %s\n", load_msg->argv[2], load_msg->argv[3]);
     if (ovat_if_module_load(load_msg->argv[2], atoi(load_msg->argv[3])) != OVAT_EOK) {
         ovat_if_action_reply(fd, aux, "Maybe it has not been registered, Load module", OVAT_IF_ACTION_NOT_OK);
         return;
@@ -40,7 +40,7 @@ static void
 ovat_core_module_unload(int fd, void *msg, void *aux)
 {
     struct ovat_netsock_msg *unload_msg = (struct ovat_netsock_msg *)msg;
-    OVAT_LOG(INFO, CORE, "unload module %s\n", unload_msg->argv[2]);
+    OVAT_LOG(INFO, CORE, "unload module: %s\n", unload_msg->argv[2]);
     ovat_if_module_unload(unload_msg->argv[2]);
     ovat_netsock_msg_ack(fd, (struct netsock *)aux);
 }
@@ -89,10 +89,10 @@ main(int argc, char *argv[])
         goto out;
     }
 
-    ovat_ctl_command_register("commands/list", "List commands", 0, 0, ovat_core_commands_dump, netsock);
-    ovat_ctl_command_register("ovat/exit", "Exit ovat platform", 0, 0, ovat_core_set_exit, netsock);
-    ovat_ctl_command_register("module/load", "Load module [name] [period]", 2, 2, ovat_core_module_load, netsock);
-    ovat_ctl_command_register("module/unload", "Unload module [name]", 1, 1, ovat_core_module_unload, netsock);
+    ovat_ctl_command_register("commands/list", "", 0, 0, ovat_core_commands_dump, netsock);
+    ovat_ctl_command_register("ovat/exit", "", 0, 0, ovat_core_set_exit, netsock);
+    ovat_ctl_command_register("module/load", "[module name] [period]", 2, 2, ovat_core_module_load, netsock);
+    ovat_ctl_command_register("module/unload", "[module name]", 1, 1, ovat_core_module_unload, netsock);
 
     ovat_if_init(netsock);
     OVAT_LOG(INFO, CORE, "ovat-core start\n");

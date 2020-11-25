@@ -3,7 +3,7 @@
 
 void BswM_Nm_CarWakeUpIndication(NetworkHandleType Network)
 {
-    OVAT_LOG(INFO, BSWMSTUB, "stub BswM_Nm_CarWakeUpIndication %u\n", Network);
+    OVAT_LOG(INFO, BSWMSTUB, "stub BswM_Nm_CarWakeUpIndication, Network: %u\n", Network);
     return;
 }
 

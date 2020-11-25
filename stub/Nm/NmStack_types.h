@@ -18,4 +18,8 @@ typedef enum {
     NM_MODE_SYNCHRONIZE,
     NM_MODE_NETWORK,
 } Nm_ModeType;
+
+extern char *nmStates[];
+extern char *nmModes[];
+
 #endif /* NMSTACK_TYPES_H */

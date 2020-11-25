@@ -94,9 +94,11 @@ ovat_ctl_command_process(void *aux)
         command = ovat_ctl_command_lookup(pd_command->msg_body.argv[1]);
         if (command == NULL) {
             memset(&reply, 0, sizeof(struct ovat_netsock_msg));
-            reply.argc = 1;
+            reply.argc = 2;
             snprintf(reply.argv[0], sizeof(reply.argv[0]),
-                    "%s", "command has not been registered");
+                    "%s", "command has not been registered,");
+            snprintf(reply.argv[1], sizeof(reply.argv[1]),
+                    "%s", "try <ovat-appctl commands/list> to show registered commands");
             ovat_netsock_msg_reply(pd_command->fd, pd_command->aux, &reply);
             ovat_netsock_msg_ack(pd_command->fd, pd_command->aux);
             list_del(&pd_command->command_node);

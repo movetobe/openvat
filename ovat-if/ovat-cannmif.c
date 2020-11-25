@@ -81,7 +81,7 @@ ovat_cannmif_set_userdata(int fd, void *msg, void *aux)
         ovat_if_action_reply(fd, aux, "Call CanNm_SetUserData()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    OVAT_LOG(INFO, CANNMIF, "NetworkHandle %s, userdata 0x%s %s %s %s %s %s %s %s\n",
+    OVAT_LOG(INFO, CANNMIF, "NetworkHandle: %s, userdata: 0x%s %s %s %s %s %s %s %s\n",
                                     command_msg->argv[2], command_msg->argv[3],
                                     command_msg->argv[4], command_msg->argv[5],
                                     command_msg->argv[6], command_msg->argv[7],
@@ -102,7 +102,7 @@ ovat_cannmif_get_userdata(int fd, void *msg, void *aux)
         return;
     }
 
-    OVAT_LOG(INFO, CANNMIF, "NetworkHandle %s, userdata 0x%02x %02x %02x %02x %02x %02x %02x %02x",
+    OVAT_LOG(INFO, CANNMIF, "NetworkHandle: %s, userdata: 0x%02x %02x %02x %02x %02x %02x %02x %02x",
                 command_msg->argv[2], userdata[0], userdata[1], userdata[2], userdata[3],
                 userdata[4], userdata[5], userdata[6], userdata[7]);
     ds_init(&s);
@@ -131,7 +131,7 @@ ovat_cannmif_transmit(int fd, void *msg, void *aux)
         ovat_if_action_reply(fd, aux, "Call CanNm_Transmit()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    OVAT_LOG(INFO, CANNMIF, "TxPduId %s, userdata 0x%s %s %s %s %s %s %s %s\n",
+    OVAT_LOG(INFO, CANNMIF, "TxPduId: %s, userdata: 0x%s %s %s %s %s %s %s %s\n",
                                     command_msg->argv[2], command_msg->argv[3],
                                     command_msg->argv[4], command_msg->argv[5],
                                     command_msg->argv[6], command_msg->argv[7],
@@ -153,7 +153,7 @@ ovat_cannmif_get_nodeid(int fd, void *msg, void *aux)
     }
     ds_init(&s);
     ds_put_format(&s, "nodeid: %u", nodeid);
-    OVAT_LOG(INFO, CANNMIF, "NetworkHandle %s, nodeid 0x%x\n", command_msg->argv[2], nodeid);
+    OVAT_LOG(INFO, CANNMIF, "NetworkHandle: %s, nodeid: 0x%x\n", command_msg->argv[2], nodeid);
     ovat_if_action_reply(fd, aux, "Call CanNm_GetNodeIdentifier()", s.string);
     ds_destroy(&s);
 }
@@ -172,7 +172,7 @@ ovat_cannmif_get_localnodeid(int fd, void *msg, void *aux)
 
     ds_init(&s);
     ds_put_format(&s, "nodeid: %u", nodeid);
-    OVAT_LOG(INFO, CANNMIF, "NetworkHandle %s, nodeid 0x%x\n", command_msg->argv[2], nodeid);
+    OVAT_LOG(INFO, CANNMIF, "NetworkHandle: %s, nodeid: 0x%x\n", command_msg->argv[2], nodeid);
     ovat_if_action_reply(fd, aux, "Call CanNm_GetLocalNodeIdentifier()", s.string);
     ds_destroy(&s);
 }
@@ -200,7 +200,7 @@ ovat_cannmif_get_pdudata(int fd, void *msg, void *aux)
         ovat_if_action_reply(fd, aux, "Call CanNm_GetPduData()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    OVAT_LOG(INFO, CANNMIF, "NetworkHandle %s, pdudata 0x%02x %02x %02x %02x %02x %02x %02x %02x",
+    OVAT_LOG(INFO, CANNMIF, "NetworkHandle: %s, pdudata: 0x%02x %02x %02x %02x %02x %02x %02x %02x",
                     command_msg->argv[2], pdudata[0], pdudata[1], pdudata[2], pdudata[3],
                     pdudata[4], pdudata[5], pdudata[6], pdudata[7]);
     ds_init(&s);
@@ -224,8 +224,8 @@ ovat_cannmif_get_state(int fd, void *msg, void *aux)
         return;
     }
     ds_init(&s);
-    ds_put_format(&s, "Mode: %u, State: %u", mode, state);
-    OVAT_LOG(INFO, CANNMIF, "NetworkHandle %s, Mode %u, State %u\n", command_msg->argv[2], mode, state);
+    ds_put_format(&s, "Mode: %s, State: %s", nmModes[mode], nmStates[state]);
+    OVAT_LOG(INFO, CANNMIF, "NetworkHandle: %s, Mode: %s, State: %s\n", command_msg->argv[2], nmModes[mode], nmStates[state]);
     ovat_if_action_reply(fd, aux, "Call CanNm_GetState()", s.string);
     ds_destroy(&s);
 }
@@ -238,9 +238,9 @@ ovat_cannmif_get_versioninfo(int fd, void *msg, void *aux)
 
     CanNm_GetVersionInfo(&version);
     ds_init(&s);
-    ds_put_format(&s, "VendorID: %u, ModuleID: %u, Major: %u, Minor: %u",
+    ds_put_format(&s, "VendorID: 0x%02x, ModuleID: 0x%02x, Major: 0x%02x, Minor: 0x%02x",
             version.vendorID, version.moduleID, version.sw_major_version, version.sw_minor_version);
-    OVAT_LOG(INFO, CANNMIF, "VendorID: %u, ModuleID: %u, Major: %u, Minor: %u",
+    OVAT_LOG(INFO, CANNMIF, "VendorID: 0x%02x, ModuleID: 0x%02x, Major: 0x%02x, Minor: 0x%02x",
             version.vendorID, version.moduleID, version.sw_major_version, version.sw_minor_version);
     ovat_if_action_reply(fd, aux, "Call CanNm_GetVersionInfo()", s.string);
     ds_destroy(&s);
@@ -271,7 +271,7 @@ ovat_cannmif_check_remotesleepind(int fd, void *msg, void *aux)
     }
     ds_init(&s);
     ds_put_format(&s, "ind: %u", ind);
-    OVAT_LOG(INFO, CANNMIF, "NetworkHandle %s, Sleep Indication %u\n", command_msg->argv[2], ind);
+    OVAT_LOG(INFO, CANNMIF, "NetworkHandle: %s, Sleep Indication: %u\n", command_msg->argv[2], ind);
     ovat_if_action_reply(fd, aux, "Call CanNm_CheckRemoteSleepIndication()", s.string);
     ds_destroy(&s);
 }
@@ -285,7 +285,7 @@ ovat_cannmif_set_sleepreadybit(int fd, void *msg, void *aux)
         ovat_if_action_reply(fd, aux, "Call CanNm_SetSleepReadyBit()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    OVAT_LOG(INFO, CANNMIF, "NetworkHandle %s, sleep ready bit %s",
+    OVAT_LOG(INFO, CANNMIF, "NetworkHandle: %s, SleepReadyBit: %s",
                                     command_msg->argv[2], command_msg->argv[3]);
     ovat_if_action_reply(fd, aux, "Call CanNm_SetSleepReadyBit()", OVAT_IF_ACTION_OK);
 }
@@ -296,7 +296,7 @@ ovat_cannmif_tx_confirmation(int fd, void *msg, void *aux)
     struct ovat_netsock_msg *command_msg = (struct ovat_netsock_msg *)msg;
 
     CanNm_TxConfirmation(atoi(command_msg->argv[2]), atoi(command_msg->argv[3]));
-    OVAT_LOG(INFO, CANNMIF, "TxPduId %s, result %s", command_msg->argv[2], command_msg->argv[3]);
+    OVAT_LOG(INFO, CANNMIF, "TxPduId: %s, result: %s", command_msg->argv[2], command_msg->argv[3]);
     ovat_if_action_reply(fd, aux, "Call CanNm_TxConfirmation()", OVAT_IF_ACTION_OK);
 }
 
@@ -315,7 +315,7 @@ ovat_cannmif_rx_indication(int fd, void *msg, void *aux)
     pduinfo.SduDataPtr = pdu;
     pduinfo.SduLength = 8;
     CanNm_RxIndication(atoi(command_msg->argv[2]), &pduinfo);
-    OVAT_LOG(INFO, CANNMIF, "RxPduId %s, pdu 0x%s %s %s %s %s %s %s %s\n",
+    OVAT_LOG(INFO, CANNMIF, "RxPduId: %s, pdu: 0x%s %s %s %s %s %s %s %s\n",
                                     command_msg->argv[2], command_msg->argv[3],
                                     command_msg->argv[4], command_msg->argv[5],
                                     command_msg->argv[6], command_msg->argv[7],
@@ -351,7 +351,7 @@ ovat_cannmif_trigger_transmit(int fd, void *msg, void *aux)
         ovat_if_action_reply(fd, aux, "Call CanNm_TriggerTransmit()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    OVAT_LOG(INFO, CANNMIF, "TxPduId %s, pdu 0x%s %s %s %s %s %s %s %s\n",
+    OVAT_LOG(INFO, CANNMIF, "TxPduId: %s, pdu: 0x%s %s %s %s %s %s %s %s\n",
                                     command_msg->argv[2], command_msg->argv[3],
                                     command_msg->argv[4], command_msg->argv[5],
                                     command_msg->argv[6], command_msg->argv[7],
@@ -363,47 +363,47 @@ ovat_cannmif_trigger_transmit(int fd, void *msg, void *aux)
 void
 ovat_cannmif_command_register(void *aux)
 {
-    ovat_ctl_command_register("cannm/pass-start-up", "CanNm_PassiveStartUp [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/pass-start-up", "[nmChannelHandle]",
                                 1, 1, ovat_cannmif_pass_start_up, aux);
-    ovat_ctl_command_register("cannm/network-request", "CanNm_NetworkRequest [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/network-request", "[nmChannelHandle]",
                                 1, 1, ovat_cannmif_network_request, aux);
-    ovat_ctl_command_register("cannm/network-release", "CanNm_NetworkRelease [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/network-release", "[nmChannelHandle]",
                                 1, 1, ovat_cannmif_network_release, aux);
-    ovat_ctl_command_register("cannm/disable-communication", "CanNm_DisableCommunication [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/disable-communication", "[nmChannelHandle]",
                                 1, 1, ovat_cannmif_disable_communication, aux);
-    ovat_ctl_command_register("cannm/enable-communication", "CanNm_EnableCommunication [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/enable-communication", "[nmChannelHandle]",
                                 1, 1, ovat_cannmif_enable_communication, aux);
-    ovat_ctl_command_register("cannm/set-userdata", "CanNm_SetUserData [nmChannelHandle] [UserData]",
+    ovat_ctl_command_register("cannm/set-userdata", "[nmChannelHandle] [UserData]",
                                 7, 9, ovat_cannmif_set_userdata, aux);
-    ovat_ctl_command_register("cannm/get-userdata", "CanNm_GetUserData [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/get-userdata", "[nmChannelHandle]",
                                 1, 1, ovat_cannmif_get_userdata, aux);
-    ovat_ctl_command_register("cannm/transmit", "CanNm_Transmit [nmChannelHandle] [PduInfo]",
+    ovat_ctl_command_register("cannm/transmit", "[nmChannelHandle] [PduInfo]",
                                 9, 9, ovat_cannmif_transmit, aux);
-    ovat_ctl_command_register("cannm/get-nodeid", "CanNm_GetNodeIdentifier [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/get-nodeid", "[nmChannelHandle]",
                                 1, 1, ovat_cannmif_get_nodeid, aux);
-    ovat_ctl_command_register("cannm/get-localnodeid", "CanNm_GetLocalNodeIdentifier [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/get-localnodeid", "[nmChannelHandle]",
                                 1, 1, ovat_cannmif_get_localnodeid, aux);
-    ovat_ctl_command_register("cannm/repeat-message-request", "CanNm_RepeatMessageRequest [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/repeat-message-request", "[nmChannelHandle]",
                                 1, 1, ovat_cannmif_repeat_message_request, aux);
-    ovat_ctl_command_register("cannm/get-pdudata", "CanNm_GetPduData [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/get-pdudata", "[nmChannelHandle]",
                                 1, 1, ovat_cannmif_get_pdudata, aux);
-    ovat_ctl_command_register("cannm/get-state", "CanNm_GetState [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/get-state", "[nmChannelHandle]",
                                 1, 1, ovat_cannmif_get_state, aux);
-    ovat_ctl_command_register("cannm/get-versioninfo", "CanNm_GetVersionInfo",
+    ovat_ctl_command_register("cannm/get-versioninfo", "",
                                 0, 0, ovat_cannmif_get_versioninfo, aux);
-    ovat_ctl_command_register("cannm/request-bussync", "CanNm_RequestBusSynchronization [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/request-bussync", "[nmChannelHandle]",
                                 1, 1, ovat_cannmif_request_bussync, aux);
-    ovat_ctl_command_register("cannm/check-remotesleepind", "CanNm_CheckRemoteSleepIndication [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/check-remotesleepind", "[nmChannelHandle]",
                                 1, 1, ovat_cannmif_check_remotesleepind, aux);
-    ovat_ctl_command_register("cannm/set-sleepreadybit", "CanNm_SetSleepReadyBit [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/set-sleepreadybit", "[nmChannelHandle]",
                                 2, 2, ovat_cannmif_set_sleepreadybit, aux);
-    ovat_ctl_command_register("cannm/tx-confirmation", "CanNm_TxConfirmation [TxPduId] [result]",
+    ovat_ctl_command_register("cannm/tx-confirmation", "[TxPduId] [result]",
                                 2, 2, ovat_cannmif_tx_confirmation, aux);
-    ovat_ctl_command_register("cannm/rx-indication", "CanNm_RxIndication [RxPduId] [pdudata]",
+    ovat_ctl_command_register("cannm/rx-indication", "[RxPduId] [pdudata]",
                                 9, 9, ovat_cannmif_rx_indication, aux);
-    ovat_ctl_command_register("cannm/confirm-pnavail", "CanNm_ConfirmPnAvailability [nmChannelHandle]",
+    ovat_ctl_command_register("cannm/confirm-pnavail", "[nmChannelHandle]",
                                 1, 1, ovat_cannmif_confirm_pnavail, aux);
-    ovat_ctl_command_register("cannm/trigger-transmit", "CanNm_TriggerTransmit [TxPduId] [pdudata]",
+    ovat_ctl_command_register("cannm/trigger-transmit", "[TxPduId] [pdudata]",
                                 9, 9, ovat_cannmif_trigger_transmit, aux);
 }
 

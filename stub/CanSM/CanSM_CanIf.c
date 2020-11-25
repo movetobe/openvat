@@ -3,7 +3,7 @@
 
 void CanSM_TxTimeoutException(NetworkHandleType Channel)
 {
-    OVAT_LOG(INFO, CANSMSTUB, "stub CanSM_TxTimeoutException, %u\n", Channel);
+    OVAT_LOG(INFO, CANSMSTUB, "stub CanSM_TxTimeoutException, Channel: %u\n", Channel);
     return;
 }
 
