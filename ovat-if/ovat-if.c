@@ -1,6 +1,7 @@
 #include "ovat-if.h"
 #include "ovat-nmif.h"
 #include "ovat-cannmif.h"
+#include "ovat-canif.h"
 #include "ovat-list.h"
 #include "ovat-utils.h"
 #include "ovat-netsock-msg.h"
@@ -9,6 +10,7 @@
 #include "ovat-log.h"
 #include "Nm.h"
 #include "CanNm.h"
+#include "Can.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -47,6 +49,8 @@ ovat_if_init(void *aux)
     ovat_nmif_command_register(aux);
     OVAT_IF_REGISTER_MODULE(CanNm);
     ovat_cannmif_command_register(aux);
+    OVAT_IF_REGISTER_MODULE(Can);
+    ovat_canif_command_register(aux);
 }
 
 void

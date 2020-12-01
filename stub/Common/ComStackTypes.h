@@ -17,6 +17,9 @@ typedef uint8_t uint8;
 typedef uint16_t uint16;
 #endif
 
+#ifndef uint32
+typedef uint32_t uint32;
+#endif
 
 #ifndef PduIdType
 typedef uint16_t PduIdType;
@@ -31,5 +34,18 @@ typedef struct PduInfo {
     uint8 *MetaDataPtr;
     PduLengthType SduLength;
 } PduInfoType;
+
+typedef struct BufReq_Return{
+
+} BufReq_ReturnType;
+
+typedef struct RetryInfo{
+
+} RetryInfoType;
+
+typedef struct TPParameter{
+
+} TPParameterType;
+
 #endif /* COMSTACKTYPES_H */
 

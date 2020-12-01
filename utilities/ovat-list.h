@@ -7,6 +7,7 @@
 #include <linux/const.h>
 #include <linux/kernel.h>
 #include <stdbool.h>
+#include <stddef.h>
 /*
  * Simple doubly linked list implementation.
  *
@@ -317,5 +318,17 @@ static inline int list_is_singular(const struct list_head *head)
 		n = list_next_entry(pos, member);			\
 	     &pos->member != (head); 					\
 	     pos = n, n = list_next_entry(n, member))
+
+static inline size_t
+list_size(const struct list_head *list)
+{
+    const struct list_head *e;
+    size_t cnt = 0;
+
+    for (e = list->next; e != list; e = e->next) {
+        cnt++;
+    }
+    return cnt;
+}
 
 #endif

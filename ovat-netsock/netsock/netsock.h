@@ -15,6 +15,7 @@ enum netsock_conn_type {
     NETSOCK_CONN_TYPE_NONE,
     NETSOCK_CONN_TYPE_CLIENT,
     NETSOCK_CONN_TYPE_SERVER,
+    NETSOCK_CONN_TYPE_LOOPBACK,
     NETSOCK_CONN_TYPE_MAX
 };
 
@@ -47,7 +48,7 @@ struct netsock_class {
 };
 
 int netsock_initialize(void);
-int netsock_open(char *name, int conn_type, char *path, char *class_type, struct netsock **netsockp);
+int netsock_open(char *name, int conn_type, const char *path, char *class_type, struct netsock **netsockp);
 int netsock_close(struct netsock *netsock_);
 int netsock_class_register(struct netsock_class *new_class);
 void netsock_class_unregister(struct netsock_class *new_class);

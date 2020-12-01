@@ -122,7 +122,7 @@ netsock_unix_sock_construct(struct netsock *netsock_)
     unix_sock->up.sock_type = SOCK_STREAM;
 
     sockfd = socket(unix_sock->up.sock_family, unix_sock->up.sock_type, unix_sock->up.sock_protocol);
-    
+
     memset(&sockaddr, 0, sizeof(struct sockaddr_un));
     sockaddr.sun_family = AF_UNIX;
     strncpy(sockaddr.sun_path, netsock_->path, sizeof(sockaddr.sun_path) - 1);
@@ -227,7 +227,8 @@ netsock_unix_sock_register(msg_handler_cb *cb)
 {
     ns_unix_sock.msg_handler = cb;
     return netsock_class_register(&ns_unix_sock);
-}
+}
+
 void
 netsock_unix_sock_unregister(void)
 {

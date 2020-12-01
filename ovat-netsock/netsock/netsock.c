@@ -91,7 +91,7 @@ netsock_initialize(void)
 }
 
 int
-netsock_open(char *name, int conn_type, char *path, char *class_type, struct netsock **netsockp)
+netsock_open(char *name, int conn_type, const char *path, char *class_type, struct netsock **netsockp)
 {
     int ret = OVAT_EOK;
     struct netsock_registered_class *rc = NULL;
