@@ -5,8 +5,6 @@ INCLUDE_DIRS+=$(STUB_DIR)/Common \
 			  $(BASE_DIR)/ovat-log \
 			  $(BASE_DIR)/utilities \
 			  $(STUB_DIR)/Can \
-			  $(STUB_DIR)/CanNm \
-			  $(STUB_DIR)/Nm \
 			  $(STUB_DIR)/CanIf \
 			  $(BASE_DIR)/ovat-netsock \
 			  $(BASE_DIR)/ovat-netsock/netsock \
@@ -17,7 +15,7 @@ SHARE:=--share
 
 CFLAGS+=-g -fPIC
 
-LFLAGS+=$(SHARE) -L$(STUB_DIR) -lcanif-stub -Wl,-rpath /usr/lib/
+LFLAGS+=$(SHARE)
 
 CC:=gcc -o
 
