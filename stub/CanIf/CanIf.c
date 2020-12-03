@@ -21,6 +21,7 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 
     ds_destroy(&s);
 
+    can_pdu.swPduHandle = TxPduId;
     can_pdu.id = TxPduId;
     can_pdu.sdu = pdu;
     can_pdu.length = PduInfoPtr->SduLength;

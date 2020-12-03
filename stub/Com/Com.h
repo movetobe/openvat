@@ -10,4 +10,8 @@
 typedef uint16_t Com_SignalIdType;
 #endif
 
+uint8 Com_SendSignal(Com_SignalIdType SignalId, const void* SignalDataPtr);
+void Com_Init(void *config);
+void Com_MainFunction(void);
+
 #endif /* COM_H */

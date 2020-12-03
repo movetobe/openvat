@@ -1,13 +1,11 @@
-#ifndef BSWM_H
-#define BSWM_H
+#ifndef BSWM_NM_H
+#define BSWM_NM_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include "StandardTypes.h"
-#include "NmStack_types.h"
 
-void void BswM_Nm_CarWakeUpIndication(NetworkHandleType Network);
+void BswM_Nm_CarWakeUpIndication(NetworkHandleType Network);
 
-
-#endif /* BSWM_H */
+#endif /* BSWM_NM_H */

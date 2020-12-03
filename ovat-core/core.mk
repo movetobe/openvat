@@ -14,7 +14,7 @@ CORE_BIN:=${CORE_DIR}/ovat-core
 
 CFLAGS+=-g -Wall -fPIC
 
-STUB_LIB+=$(BASE_DIR)/stub/
+STUB_LIB+=$(BASE_DIR)/stub
 LFLAGS+=-L$(STUB_LIB) -lcannm-stub -lnm-stub -lbswm-stub -lcansm-stub -lcanif-stub -lpdur-stub -ldet-stub -lcom-stub -lcomm-stub -lcan-stub -lpthread -Wl,-rpath /usr/lib/
 
 CC:=gcc

@@ -7,5 +7,3 @@ void BswM_Nm_CarWakeUpIndication(NetworkHandleType Network)
     return;
 }
 
-OVAT_LOG_REGISTER(bswmstub_logtype, BSWMSTUB, INFO);
-

@@ -19,5 +19,14 @@ Std_ReturnType Det_ReportRuntimeError(uint16 ModuleId, uint8 InstanceId,
     return E_OK;
 }
 
+void Det_Init(void *config)
+{
+    OVAT_LOG(INFO, DETSTUB, "stub Det_Init");
+    return;
+}
+
+void Det_MainFunction(void)
+{
+}
 OVAT_LOG_REGISTER(detstub_logtype, DETSTUB, INFO);
 

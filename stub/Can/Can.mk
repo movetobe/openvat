@@ -15,7 +15,7 @@ SHARE:=--share
 
 CFLAGS+=-g -fPIC
 
-LFLAGS+=$(SHARE)
+LFLAGS+=$(SHARE) -L$(STUB_DIR) -lcanif-stub -Wl,-rpath /usr/lib/
 
 CC:=gcc -o
 

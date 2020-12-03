@@ -31,5 +31,3 @@ void ComM_Nm_RestartIndication(NetworkHandleType Channel)
     return;
 }
 
-OVAT_LOG_REGISTER(commstub_logtype, COMMSTUB, INFO);
-

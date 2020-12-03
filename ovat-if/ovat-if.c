@@ -11,6 +11,12 @@
 #include "Nm.h"
 #include "CanNm.h"
 #include "Can.h"
+#include "BswM.h"
+#include "Det.h"
+#include "PduR.h"
+#include "Com.h"
+#include "ComM.h"
+#include "CanSM.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -51,6 +57,13 @@ ovat_if_init(void *aux)
     ovat_cannmif_command_register(aux);
     OVAT_IF_REGISTER_MODULE(Can);
     ovat_canif_command_register(aux);
+
+    OVAT_IF_REGISTER_MODULE(BswM);
+    OVAT_IF_REGISTER_MODULE(Det);
+    OVAT_IF_REGISTER_MODULE(PduR);
+    OVAT_IF_REGISTER_MODULE(CanSM);
+    OVAT_IF_REGISTER_MODULE(Com);
+    OVAT_IF_REGISTER_MODULE(ComM);
 }
 
 void

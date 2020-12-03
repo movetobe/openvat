@@ -132,30 +132,57 @@ err1:
 }
 
 int
+can_remove_vcan_dev(const char *device)
+{
+    int ret = OVAT_EOK;
+    char command[128] = {0};
+
+    struct vcan_channel *vchannel = can_vchannel_lookup_by_name(device);
+
+    if (vchannel == NULL) {
+        OVAT_LOG(INFO, CANSTUB, "vcan device does not exist, name: %s", device);
+        ret = -OVAT_ENOEXIST;
+        goto err1;
+    }
+
+    /* system() is an unsafety way to execute following shell commands:
+     * ip link delete vcan0
+     */
+    snprintf(command, sizeof(command), "ip link delete %s", device);
+    if (system(command) != 0) {
+        OVAT_LOG(ERR, CANSTUB, "ip link add dev %s type vcan FAILED, errno: %u", device, errno);
+    }
+
+    ret =  netsock_close(vchannel->vcan_netsock);
+    if (ret < 0) {
+        OVAT_LOG(ERR, CANSTUB, "netsock open failed, path: %s, ret: %d\n", device, ret);
+    }
+
+    list_del(&(vchannel->vcan_node));
+    free(vchannel);
+err1:
+    return ret;
+}
+
+int
 can_destroy_vcan_dev(void)
 {
     int ret = OVAT_EOK;
     struct vcan_channel *vchannel, *tvchannel;
 
     list_for_each_entry_safe(vchannel, tvchannel, &vcan_channels_list, vcan_node) {
-        ret = netsock_close(vchannel->vcan_netsock);
-        if (ret < 0) {
-            OVAT_LOG(ERR, CANSTUB, "netsock close failed, ret: %d\n", ret);
-        }
-        list_del(&(vchannel->vcan_node));
-        free(vchannel);
+        can_remove_vcan_dev(vchannel->vcan_netsock->path);
     }
 
     return ret;
 }
 
 static int
-can_write(uint32_t hwid, void *buffer, size_t length)
+can_write(struct vcan_channel *vchannel, uint32_t hwid, void *buffer, size_t length)
 {
     struct can_frame frame;
     size_t count = sizeof(struct can_frame);
     int ret = 0;
-    struct vcan_channel *vchannel = can_vchannel_lookup_by_hwid(hwid);
     int sockfd = can_get_sockfd(vchannel->vcan_netsock);
 
     if (sockfd < 0) {
@@ -180,14 +207,14 @@ can_write(uint32_t hwid, void *buffer, size_t length)
 Std_ReturnType
 Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
 {
-    struct vcan_channel *vchannel = can_vchannel_lookup_by_swid(PduInfo->swPduHandle);
+    struct vcan_channel *vchannel = can_vchannel_lookup_by_hwid(Hth);
 
     if (vchannel == NULL) {
         OVAT_LOG(INFO, CANSTUB, "No free vcan channel to use");
         return E_NOT_OK;
     }
 
-    if (can_write(Hth, PduInfo->sdu, PduInfo->length) < 0) {
+    if (can_write(vchannel, Hth, PduInfo->sdu, PduInfo->length) < 0) {
         OVAT_LOG(INFO, CANSTUB, "can virtual device write failed");
         return E_NOT_OK;
     }
