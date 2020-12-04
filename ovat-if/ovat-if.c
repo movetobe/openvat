@@ -17,6 +17,7 @@
 #include "Com.h"
 #include "ComM.h"
 #include "CanSM.h"
+#include "CanIf.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -42,8 +43,8 @@ struct ovat_if_module {
 do {                                                                            \
     struct ovat_if_module *module = calloc(1, sizeof(struct ovat_if_module));   \
     snprintf(module->name, OVAT_IF_MODULE_NAME_LEN, "%s", #MODULE_NAME);        \
-    module->ops.init = (void *)MODULE_NAME##_Init;                                     \
-    module->ops.mainfunc = MODULE_NAME##_MainFunction;                         \
+    module->ops.init = (void *)MODULE_NAME##_Init;                              \
+    module->ops.mainfunc = MODULE_NAME##_MainFunction;                          \
     list_add_tail(&module->module_node, &ovat_if_modules);                      \
 } while(0);
 
@@ -58,6 +59,7 @@ ovat_if_init(void *aux)
     OVAT_IF_REGISTER_MODULE(Can);
     ovat_canif_command_register(aux);
 
+    OVAT_IF_REGISTER_MODULE(CanIf);
     OVAT_IF_REGISTER_MODULE(BswM);
     OVAT_IF_REGISTER_MODULE(Det);
     OVAT_IF_REGISTER_MODULE(PduR);

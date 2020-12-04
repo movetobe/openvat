@@ -47,6 +47,16 @@ Std_ReturnType CanIf_RxIndication(PduIdType RxPduId, size_t length, void *data)
     return E_OK;
 }
 
+void CanIf_Init(void *config)
+{
+    OVAT_LOG(INFO, CANIFSTUB, "stub CanIf_Init");
+    return;
+}
+
+void CanIf_MainFunction(void)
+{
+
+}
 
 OVAT_LOG_REGISTER(canifstub_logtype, CANIFSTUB, INFO);
 
