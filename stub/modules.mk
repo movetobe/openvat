@@ -12,6 +12,8 @@ all:
 	make all -f $(STUB_DIR)/PduR/PduR.mk
 	make all -f $(STUB_DIR)/ComM/ComM.mk
 	make all -f $(STUB_DIR)/Can/Can.mk
+	make all -f $(STUB_DIR)/Dem/Dem.mk
+	make all -f $(STUB_DIR)/J1939Nm/J1939Nm.mk
 install:
 	make install -f $(STUB_DIR)/CanNm/CanNm.mk
 	make install -f $(STUB_DIR)/Nm/Nm.mk
@@ -23,6 +25,8 @@ install:
 	make install -f $(STUB_DIR)/PduR/PduR.mk
 	make install -f $(STUB_DIR)/ComM/ComM.mk
 	make install -f $(STUB_DIR)/Can/Can.mk
+	make install -f $(STUB_DIR)/Dem/Dem.mk
+	make install -f $(STUB_DIR)/J1939Nm/J1939Nm.mk
 
 .PHONY:clean
 clean:
@@ -36,3 +40,5 @@ clean:
 	make clean -f $(STUB_DIR)/PduR/PduR.mk
 	make clean -f $(STUB_DIR)/ComM/ComM.mk
 	make clean -f $(STUB_DIR)/Can/Can.mk
+	make clean -f $(STUB_DIR)/Dem/Dem.mk
+	make clean -f $(STUB_DIR)/J1939Nm/J1939Nm.mk

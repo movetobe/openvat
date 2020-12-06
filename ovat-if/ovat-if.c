@@ -18,6 +18,8 @@
 #include "ComM.h"
 #include "CanSM.h"
 #include "CanIf.h"
+#include "Dem.h"
+#include "J1939Nm.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -66,6 +68,8 @@ ovat_if_init(void *aux)
     OVAT_IF_REGISTER_MODULE(CanSM);
     OVAT_IF_REGISTER_MODULE(Com);
     OVAT_IF_REGISTER_MODULE(ComM);
+    OVAT_IF_REGISTER_MODULE(J1939Nm);
+    OVAT_IF_REGISTER_MODULE(Dem);
 }
 
 void

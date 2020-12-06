@@ -1,12 +1,11 @@
 BASE_DIR:=$(PWD)
 STUB_DIR:=$(BASE_DIR)/stub
-DIR:=$(STUB_DIR)/BswM
+DIR:=$(STUB_DIR)/Dem
 INCLUDE_DIRS+=$(STUB_DIR)/Common \
-			  $(STUB_DIR)/Nm \
 			  $(BASE_DIR)/ovat-log \
 			  $(BASE_DIR)/utilities \
 
-BIN:=$(STUB_DIR)/libbswm-stub.so
+BIN:=$(STUB_DIR)/libdem-stub.so
 
 SHARE:=--share
 
