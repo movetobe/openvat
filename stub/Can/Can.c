@@ -7,6 +7,7 @@
 #include "Can.h"
 #include "CanIf.h"
 #include "ovat-list.h"
+#include "ovat-ring.h"
 #include <linux/can.h>
 #include <unistd.h>
 
@@ -17,7 +18,8 @@ struct vcan_channel {
     struct list_head vcan_node;
 };
 static struct list_head vcan_channels_list;
-
+static struct ovat_ring *tx_ring;
+#define OVAT_TX_RING_SIZE 256
 /* There is only one connection */
 static int
 can_get_sockfd(struct netsock *can_netsock)
@@ -73,12 +75,6 @@ static int
 can_message_process(int fd, struct netsock *netsock_, void *msg)
 {
     struct can_frame *frame = (struct can_frame *)msg;
-
-    /* this ecu's message, do TX confirmation and do not RX indication */
-    if (can_vchannel_lookup_by_swid(frame->can_id)) {
-        CanIf_TxConfirmation(frame->can_id, E_OK);
-        return OVAT_EOK;
-    }
 
     /* other ecu's message, indication to upper layer */
     return CanIf_RxIndication(frame->can_id, frame->can_dlc, frame->data);
@@ -208,6 +204,7 @@ Std_ReturnType
 Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
 {
     struct vcan_channel *vchannel = can_vchannel_lookup_by_hwid(Hth);
+    uint32_t pduid = (uint32_t)(PduInfo->swPduHandle);
 
     if (vchannel == NULL) {
         OVAT_LOG(INFO, CANSTUB, "No free vcan channel to use");
@@ -216,6 +213,10 @@ Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
 
     if (can_write(vchannel, Hth, PduInfo->sdu, PduInfo->length) < 0) {
         OVAT_LOG(INFO, CANSTUB, "can virtual device write failed");
+        return E_NOT_OK;
+    }
+    if (ovat_ring_enqueue(tx_ring, &pduid, 1) < 0) {
+        OVAT_LOG(INFO, CANSTUB, "can tx ring enqueue failed");
         return E_NOT_OK;
     }
     return E_OK;
@@ -232,10 +233,16 @@ Can_Init(const Can_ConfigType *config)
         OVAT_LOG(ERR, CANSTUB, "netsock unix sock register failed");
         return;
     }
+    tx_ring = ovat_ring_create(OVAT_TX_RING_SIZE);
 }
 
 void Can_MainFunction(void)
 {
+    uint32_t pduid = 0;
+
+    if (ovat_ring_dequeue(tx_ring, &pduid, 1) == OVAT_EOK) {
+        CanIf_TxConfirmation((PduIdType)pduid, E_OK);
+    }
 }
 
 OVAT_LOG_REGISTER(canstub_logtype, CANSTUB, INFO);

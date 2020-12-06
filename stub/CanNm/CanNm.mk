@@ -5,6 +5,7 @@ DIR:=$(STUB_DIR)/CanNm
 INCLUDE_DIRS+=$(STUB_DIR)/Common \
 			  $(STUB_DIR)/CanNm \
 			  $(STUB_DIR)/Nm \
+			  $(STUB_DIR)/CanIf \
 			  $(BASE_DIR)/ovat-log \
               $(BASE_DIR)/utilities \
 

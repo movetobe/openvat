@@ -1,6 +1,7 @@
 #include "CanNm.h"
 #include "ovat-log.h"
 #include "StandardTypes.h"
+#include "CanIf.h"
 
 void CanNm_Init(const CanNm_ConfigType *cannmConfigPtr)
 {
@@ -68,6 +69,7 @@ Std_ReturnType CanNm_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     uint8 *pdu = PduInfoPtr->SduDataPtr;
     OVAT_LOG(INFO, CANNMSTUB, "PduId: %u, PduInfo: 0x%02x %02x %02x %02x %02x %02x %02x %02x",
             TxPduId, pdu[0], pdu[1], pdu[2], pdu[3], pdu[4], pdu[5], pdu[6], pdu[7]);
+    CanIf_Transmit(TxPduId, PduInfoPtr);
     return E_OK;
 }
 

@@ -24,6 +24,7 @@ enum ovat_errno {
     OVAT_EEXIST, /* something exist */
     OVAT_ESYSCALL, /* syscall error */
     OVAT_ECALL, /* call error */
+    OVAT_ENOFREE, /* no free space */
 };
 
 #ifndef offsetof
