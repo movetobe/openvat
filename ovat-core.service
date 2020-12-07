@@ -4,18 +4,18 @@ MODULES_SO_PATH+=
 
 if [[ $1 = 'start' ]]; then
     export LD_PRELOAD=$MODULES_SO_PATH
-    ovat-core &
+    ovat-core $2 &
     echo 'ovat-core start'
 elif [[ $1 = 'restart' ]]; then
     kill -9 `pidof ovat-core`
     unset LD_PRELOAD
     export LD_PRELOAD=$MODULES_SO_PATH
-    ovat-core &
+    ovat-core $2 &
     echo 'ovat-core restart'
 elif [[ $1 = 'stop' ]]; then
     unset LD_PRELOAD
     pkill ovat-core
     echo 'ovat-core stop'
 else
-    echo "unknown option, use option start|stop|restart"
+    echo "unknown option, use option start|stop|restart <ecu>"
 fi

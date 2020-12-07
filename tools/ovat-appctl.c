@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <linux/limits.h>
 
 static int ovat_appctl_exit = 0;
 
@@ -37,11 +38,15 @@ main(int argc, char *argv[])
     struct ovat_netsock_msg msg;
     int i = 0;
     size_t len = 0;
+    char sock_path[PATH_MAX] = {0};
+    int index = 0;
+
+    snprintf(sock_path, PATH_MAX, "/tmp/ovat-ctl-server-%s.sock", argv[1]);
 
     ret = ovat_netsock_create("ovat-appctl-client", NETSOCK_CONN_TYPE_CLIENT,
-                    "/tmp/ovat-ctl-server.sock", &netsock, ovat_appctl_msg_handler);
+                    sock_path, &netsock, ovat_appctl_msg_handler);
     if (ret < 0) {
-        printf("ovat-appctl start failed, maybe ovat-core has not been started\n");
+        printf("ovat-appctl start failed, maybe ovat-core %s has not been started\n", argv[1]);
         goto out;
     }
 
@@ -52,10 +57,15 @@ main(int argc, char *argv[])
     }
 
     memset(&msg, 0, sizeof(struct ovat_netsock_msg));
-    msg.argc = argc;
+    /* we do not copy argv[1] which indicates which ecu we will connect */
+    msg.argc = argc - 1;
     for (i = 0; i < argc; i++) {
-        len = strlen(argv[i]) < sizeof(msg.argv[i]) ? (strlen(argv[i]) + 1) : sizeof(msg.argv[i]);
-        memcpy(msg.argv[i], argv[i], len);
+        if (i == 1) {
+            continue;
+        }
+        len = strlen(argv[i]) < sizeof(msg.argv[index]) ? (strlen(argv[i]) + 1) : sizeof(msg.argv[index]);
+        memcpy(msg.argv[index], argv[i], len);
+        index++;
     }
     ret = netsock->class->send(srv_conn->fd, netsock, (const void *)&msg, sizeof(msg));
 

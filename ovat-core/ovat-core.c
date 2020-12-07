@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <linux/limits.h>
 
 static int ovat_core_exit;
 
@@ -64,10 +66,11 @@ ovat_core_commands_dump(int fd, void *msg, void *aux)
     list_for_each_entry(command, ovat_commands, command_node) {
         if (command) {
             memset(&reply, 0, sizeof(struct ovat_netsock_msg));
-            reply.argc = 3;
+            reply.argc = 4;
             snprintf(reply.argv[0], sizeof(reply.argv[0]), "%s", "ovat-appctl");
-            snprintf(reply.argv[1], sizeof(reply.argv[1]), "%s", command->name);
-            snprintf(reply.argv[2], sizeof(reply.argv[2]), "%s", command->usage);
+            snprintf(reply.argv[1], sizeof(reply.argv[1]), "%s", "<ecu>");
+            snprintf(reply.argv[2], sizeof(reply.argv[2]), "%s", command->name);
+            snprintf(reply.argv[3], sizeof(reply.argv[3]), "%s", command->usage);
             ovat_netsock_msg_reply(fd, aux, &reply);
         }
     }
@@ -79,11 +82,15 @@ main(int argc, char *argv[])
 {
     int ret = OVAT_EOK;
     struct netsock *netsock = NULL;
+    char log_path[PATH_MAX] = {0};
+    char socket_path[PATH_MAX] = {0};
 
-    ovat_log_init("/var/log/ovat.log");
+    snprintf(log_path, PATH_MAX, "/var/log/ovat-%s.log", (argc > 1) ? argv[1] : "vecu0");
+    ovat_log_init(log_path);
     ovat_ctl_command_init();
+    snprintf(socket_path, PATH_MAX, "/tmp/ovat-ctl-server-%s.sock", (argc > 1) ? argv[1] : "vecu0");
     ret = ovat_netsock_create("ovat-ctl-server", NETSOCK_CONN_TYPE_SERVER,
-                                "/tmp/ovat-ctl-server.sock", &netsock, ovat_core_msg_handler);
+                                socket_path, &netsock, ovat_core_msg_handler);
     if (ret < 0) {
         OVAT_LOG(ERR, CORE, "unix server create failed\n");
         goto out;
