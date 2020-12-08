@@ -73,7 +73,10 @@ void J1939Nm_RequestIndication(uint8 node, NetworkHandleType channel,
                                 uint8 sourceAddress, uint8 destAddress,
                                 uint8 priority)
 {
-
+    OVAT_LOG(INFO, J1939NMSTUB, "node: %u, channel: %u, requestedPgn: %u, extIdInfo: %u, %u, %u, %u \
+                    sourceAddress: %u, destAddress: %u, priority: %u",
+            node, channel, requestedPgn, extIdInfo->extIdType, extIdInfo->extId1,
+            extIdInfo->extId2, extIdInfo->extId3, sourceAddress, destAddress, priority);
 }
 
 

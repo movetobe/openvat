@@ -141,17 +141,17 @@ can_remove_vcan_dev(const char *device)
         goto err1;
     }
 
+    ret =  netsock_close(vchannel->vcan_netsock);
+    if (ret < 0) {
+        OVAT_LOG(ERR, CANSTUB, "netsock open failed, path: %s, ret: %d\n", device, ret);
+    }
+
     /* system() is an unsafety way to execute following shell commands:
      * ip link delete vcan0
      */
     snprintf(command, sizeof(command), "ip link delete %s", device);
     if (system(command) != 0) {
         OVAT_LOG(ERR, CANSTUB, "ip link add dev %s type vcan FAILED, errno: %u", device, errno);
-    }
-
-    ret =  netsock_close(vchannel->vcan_netsock);
-    if (ret < 0) {
-        OVAT_LOG(ERR, CANSTUB, "netsock open failed, path: %s, ret: %d\n", device, ret);
     }
 
     list_del(&(vchannel->vcan_node));
@@ -245,5 +245,10 @@ void Can_MainFunction(void)
     }
 }
 
+void
+Can_DeInit(void)
+{
+    can_destroy_vcan_dev();
+}
 OVAT_LOG_REGISTER(canstub_logtype, CANSTUB, INFO);
 

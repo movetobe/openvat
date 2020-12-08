@@ -12,5 +12,11 @@ void CanSM_MainFunction(void)
 
 }
 
+void CanSM_DeInit(void)
+{
+    OVAT_LOG(INFO, CANSMSTUB, "stub CanSM_DeInit");
+    return;
+}
+
 OVAT_LOG_REGISTER(cansmstub_logtype, CANSMSTUB, INFO);
 

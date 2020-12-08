@@ -20,5 +20,12 @@ void Dem_Init(void *config)
 void Dem_MainFunction(void)
 {
 }
+
+void Dem_DeInit(void)
+{
+    OVAT_LOG(INFO, DEMSTUB, "stub Dem_DeInit");
+    return;
+}
+
 OVAT_LOG_REGISTER(demstub_logtype, DEMSTUB, INFO);
 

@@ -18,5 +18,11 @@ void Com_MainFunction(void)
 {
 }
 
+void Com_DeInit(void)
+{
+    OVAT_LOG(INFO, COMSTUB, "stub Com_DeInit");
+    return;
+}
+
 OVAT_LOG_REGISTER(comstub_logtype, COMSTUB, INFO);
 

@@ -24,5 +24,6 @@ int can_destroy_vcan_dev(void);
 Std_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo);
 void Can_Init(const Can_ConfigType *config);
 void Can_MainFunction(void);
+void Can_DeInit(void);
 
 #endif /* CAN_H */

@@ -58,5 +58,12 @@ void CanIf_MainFunction(void)
 
 }
 
+void CanIf_DeInit(void)
+{
+    OVAT_LOG(INFO, CANIFSTUB, "stub CanIf_DeInit");
+    return;
+}
+
+
 OVAT_LOG_REGISTER(canifstub_logtype, CANIFSTUB, INFO);
 

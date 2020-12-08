@@ -12,6 +12,7 @@ typedef struct Nm_ConfigType {
 } Nm_ConfigType;
 
 void Nm_Init(const Nm_ConfigType *ConfigPtr);
+void Nm_DeInit(void);
 Std_ReturnType Nm_PassiveStartUp(NetworkHandleType NetworkHandle);
 Std_ReturnType Nm_NetworkRequest(NetworkHandleType NetworkHandle);
 Std_ReturnType Nm_NetworkRelease(NetworkHandleType NetworkHandle);

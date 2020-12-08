@@ -80,12 +80,6 @@ ovat_nmif_set_userdata(int fd, void *msg, void *aux)
         ovat_if_action_reply(fd, aux, "Call Nm_SetUserData()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    OVAT_LOG(INFO, NMIF, "NetworkHandle: %s, userdata: 0x%s %s %s %s %s %s %s %s\n",
-                                    command_msg->argv[2], command_msg->argv[3],
-                                    command_msg->argv[4], command_msg->argv[5],
-                                    command_msg->argv[6], command_msg->argv[7],
-                                    command_msg->argv[8], command_msg->argv[9],
-                                    command_msg->argv[10]);
     ovat_if_action_reply(fd, aux, "Call Nm_SetUserData()", OVAT_IF_ACTION_OK);
 }
 
@@ -101,9 +95,6 @@ ovat_nmif_get_userdata(int fd, void *msg, void *aux)
         return;
     }
 
-    OVAT_LOG(INFO, NMIF, "NetworkHandle: %s, userdata: 0x%02x %02x %02x %02x %02x %02x %02x %02x",
-                command_msg->argv[2], userdata[0], userdata[1], userdata[2], userdata[3],
-                userdata[4], userdata[5], userdata[6], userdata[7]);
     ds_init(&s);
     ds_put_format(&s, "userdata: 0x%02x %02x %02x %02x %02x %02x %02x %02x",
                     userdata[0], userdata[1], userdata[2], userdata[3],
@@ -123,9 +114,6 @@ ovat_nmif_get_pdudata(int fd, void *msg, void *aux)
         ovat_if_action_reply(fd, aux, "Call Nm_GetPduData()", OVAT_IF_ACTION_NOT_OK);
         return;
     }
-    OVAT_LOG(INFO, NMIF, "NetworkHandle: %s, pdudata: 0x%02x %02x %02x %02x %02x %02x %02x %02x",
-                    command_msg->argv[2], pdudata[0], pdudata[1], pdudata[2], pdudata[3],
-                    pdudata[4], pdudata[5], pdudata[6], pdudata[7]);
     ds_init(&s);
     ds_put_format(&s, "pdudata: 0x%02x %02x %02x %02x %02x %02x %02x %02x",
                 pdudata[0], pdudata[1], pdudata[2], pdudata[3],
@@ -159,7 +147,6 @@ ovat_nmif_get_nodeid(int fd, void *msg, void *aux)
     }
     ds_init(&s);
     ds_put_format(&s, "nodeid: %u", nodeid);
-    OVAT_LOG(INFO, NMIF, "NetworkHandle: %s, nodeid: 0x%x\n", command_msg->argv[2], nodeid);
     ovat_if_action_reply(fd, aux, "Call Nm_GetNodeIdentifier()", s.string);
     ds_destroy(&s);
 }
@@ -178,7 +165,6 @@ ovat_nmif_get_localnodeid(int fd, void *msg, void *aux)
 
     ds_init(&s);
     ds_put_format(&s, "nodeid: %u", nodeid);
-    OVAT_LOG(INFO, NMIF, "NetworkHandle: %s, nodeid: 0x%x\n", command_msg->argv[2], nodeid);
     ovat_if_action_reply(fd, aux, "Call Nm_GetLocalNodeIdentifier()", s.string);
     ds_destroy(&s);
 }
@@ -196,7 +182,6 @@ ovat_nmif_check_remotesleepind(int fd, void *msg, void *aux)
     }
     ds_init(&s);
     ds_put_format(&s, "ind: %u", ind);
-    OVAT_LOG(INFO, NMIF, "NetworkHandle: %s, Sleep Indication: %u\n", command_msg->argv[2], ind);
     ovat_if_action_reply(fd, aux, "Call Nm_CheckRemoteSleepIndication()", s.string);
     ds_destroy(&s);
 }
@@ -215,7 +200,6 @@ ovat_nmif_get_state(int fd, void *msg, void *aux)
     }
     ds_init(&s);
     ds_put_format(&s, "Mode: %s, State: %s", nmModes[mode], nmStates[state]);
-    OVAT_LOG(INFO, NMIF, "NetworkHandle %s, Mode: %s, State: %s\n", command_msg->argv[2], nmModes[mode], nmStates[state]);
     ovat_if_action_reply(fd, aux, "Call Nm_GetState()", s.string);
     ds_destroy(&s);
 }
@@ -229,8 +213,6 @@ ovat_nmif_get_versioninfo(int fd, void *msg, void *aux)
     Nm_GetVersionInfo(&version);
     ds_init(&s);
     ds_put_format(&s, "VendorID: 0x%02x, ModuleID: 0x%02x, Major: 0x%02x, Minor: 0x%02x",
-            version.vendorID, version.moduleID, version.sw_major_version, version.sw_minor_version);
-    OVAT_LOG(INFO, NMIF, "VendorID: 0x%02x, ModuleID: 0x%02x, Major: 0x%02x, Minor: 0x%02x",
             version.vendorID, version.moduleID, version.sw_major_version, version.sw_minor_version);
     ovat_if_action_reply(fd, aux, "Call Nm_GetVersionInfo()", s.string);
     ds_destroy(&s);

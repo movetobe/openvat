@@ -1,6 +1,7 @@
 #include "ovat-if.h"
 #include "ovat-nmif.h"
 #include "ovat-cannmif.h"
+#include "ovat-j1939nmif.h"
 #include "ovat-canif.h"
 #include "ovat-list.h"
 #include "ovat-utils.h"
@@ -31,6 +32,7 @@ struct list_head ovat_if_modules;
 struct ovat_if_module_ops {
     void (*init)(const void *configs);
     void (*mainfunc)(void);
+    void (*uninit)(void);
 };
 struct ovat_if_module {
     char name[OVAT_IF_MODULE_NAME_LEN];
@@ -47,6 +49,7 @@ do {                                                                            
     snprintf(module->name, OVAT_IF_MODULE_NAME_LEN, "%s", #MODULE_NAME);        \
     module->ops.init = (void *)MODULE_NAME##_Init;                              \
     module->ops.mainfunc = MODULE_NAME##_MainFunction;                          \
+    module->ops.uninit = MODULE_NAME##_DeInit;                                  \
     list_add_tail(&module->module_node, &ovat_if_modules);                      \
 } while(0);
 
@@ -60,6 +63,8 @@ ovat_if_init(void *aux)
     ovat_cannmif_command_register(aux);
     OVAT_IF_REGISTER_MODULE(Can);
     ovat_canif_command_register(aux);
+    OVAT_IF_REGISTER_MODULE(J1939Nm);
+    ovat_j1939nmif_command_register(aux);
 
     OVAT_IF_REGISTER_MODULE(CanIf);
     OVAT_IF_REGISTER_MODULE(BswM);
@@ -68,7 +73,6 @@ ovat_if_init(void *aux)
     OVAT_IF_REGISTER_MODULE(CanSM);
     OVAT_IF_REGISTER_MODULE(Com);
     OVAT_IF_REGISTER_MODULE(ComM);
-    OVAT_IF_REGISTER_MODULE(J1939Nm);
     OVAT_IF_REGISTER_MODULE(Dem);
 }
 
@@ -79,6 +83,7 @@ ovat_if_uninit(void)
 
     list_for_each_entry_safe(module, tmp, &ovat_if_modules, module_node) {
         if (module) {
+            ovat_if_module_unload(module->name);
             list_del(&module->module_node);
             free(module);
         }
@@ -123,6 +128,9 @@ ovat_if_module_unload(const char *name)
         return -OVAT_ENOEXIST;
     }
 
+    if (module->ops.uninit) {
+        module->ops.uninit();
+    }
     module->module_loaded = 0;
     return OVAT_EOK;
 }

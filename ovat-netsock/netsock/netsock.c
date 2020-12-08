@@ -11,7 +11,6 @@ struct netsock_registered_class {
 };
 
 static struct list_head registered_classes;
-static bool netsock_exit = false;
 
 static struct netsock_registered_class *
 netsock_lookup_class(char *type)
@@ -74,7 +73,7 @@ netsock_loop(void *arg)
 {
     struct netsock *netsock_ = (struct netsock *) arg;
 
-    while (!netsock_exit) {
+    while (!netsock_->netsock_exit) {
         netsock_epoll_process(netsock_->epollfd, netsock_->events, MAX_EPOLL_EVENTS, NETSOCK_EPOLL_TIMEOUT);
     }
     return NULL;
@@ -147,7 +146,7 @@ netsock_close(struct netsock *netsock_)
 {
     int ret = OVAT_EOK;
 
-    netsock_exit = true;
+    netsock_->netsock_exit = true;
 
     ret = ovat_pthread_join(netsock_->thread_id, NULL);
     if (ret < 0) {

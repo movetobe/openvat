@@ -25,6 +25,12 @@ void Nm_Init(const Nm_ConfigType *ConfigPtr)
     return;
 }
 
+void Nm_DeInit(void)
+{
+    OVAT_LOG(INFO, NMSTUB, "stub Nm_DeInit\n");
+    return;
+}
+
 Std_ReturnType Nm_PassiveStartUp(NetworkHandleType NetworkHandle)
 {
     OVAT_LOG(INFO, NMSTUB, "stub Nm_PassiveStartUp, NetworkHandle: %u\n", NetworkHandle);

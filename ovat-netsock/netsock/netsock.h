@@ -29,6 +29,7 @@ struct netsock {
     int sock_family;
     int sock_type; /* socket type, SOCK_STREAM/SOCK_DGRAM... */
     int sock_protocol;
+    bool netsock_exit;
     struct netsock_class *class;
     struct list_head conn_list;
 };

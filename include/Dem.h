@@ -19,5 +19,6 @@ Std_ReturnType Dem_SetEventStatus(Dem_EventIdType EventId,
 
 void Dem_Init(void *config);
 void Dem_MainFunction(void);
+void Dem_DeInit(void);
 
 #endif /* DEM_H */

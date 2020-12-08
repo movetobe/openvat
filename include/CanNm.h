@@ -7,7 +7,6 @@
 #include "StandardTypes.h"
 #include "Nm.h"
 
-
 typedef struct CanNm_ConfigType {
     int enabled;
 } CanNm_ConfigType;

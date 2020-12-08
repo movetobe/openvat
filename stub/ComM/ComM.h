@@ -5,5 +5,6 @@
 
 void ComM_Init(void *config);
 void ComM_MainFunction(void);
+void ComM_DeInit(void);
 
 #endif /* COMM_H */

@@ -28,5 +28,12 @@ void Det_Init(void *config)
 void Det_MainFunction(void)
 {
 }
+
+void Det_DeInit(void)
+{
+    OVAT_LOG(INFO, DETSTUB, "stub Det_DeInit");
+    return;
+}
+
 OVAT_LOG_REGISTER(detstub_logtype, DETSTUB, INFO);
 

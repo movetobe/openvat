@@ -6,5 +6,6 @@
 
 void BswM_Init(const void *config);
 void BswM_MainFunction(void);
+void BswM_DeInit(void);
 
 #endif /* BSWM_H */

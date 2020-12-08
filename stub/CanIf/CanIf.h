@@ -12,5 +12,6 @@ Std_ReturnType CanIf_RxIndication(PduIdType RxPduId, size_t length, void *data);
 
 void CanIf_Init(void *config);
 void CanIf_MainFunction(void);
+void CanIf_DeInit(void);
 
 #endif /* CANIF_H */
