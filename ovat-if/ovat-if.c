@@ -158,7 +158,7 @@ ovat_if_module_load(const char *name, unsigned int msecs)
     module->module_loaded = 1;
     module->mainfunc_period = msecs;
 
-    snprintf(thread_name, OVAT_IF_MODULE_NAME_LEN, "%s_MainFunc", name);
+    snprintf(thread_name, OVAT_IF_MODULE_NAME_LEN, "%s_Main", name);
     /* create a detach thread to execute mainfunction */
     ovat_pthread_create_detach(&module->tid, thread_name, ovat_if_module_mainfunc, module);
     return OVAT_EOK;

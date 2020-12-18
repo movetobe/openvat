@@ -99,17 +99,15 @@ can_create_vcan_dev(const char *device)
     snprintf(command, sizeof(command), "ip link add dev %s type vcan", device);
     if (system(command) != 0) {
         OVAT_LOG(ERR, CANSTUB, "ip link add dev %s type vcan FAILED, errno: %u", device, errno);
-        goto err1;
     }
     memset(command, 0, sizeof(command));
     snprintf(command, sizeof(command), "ip link set up %s", device);
     if (system(command) != 0) {
         OVAT_LOG(ERR, CANSTUB, "ip link set up %s FAILED, errno:%u", device, errno);
-        goto err1;
     }
 
     struct vcan_channel *new_vchannel = calloc(1, sizeof(struct vcan_channel));
-    ret =  netsock_open("virtual-can", NETSOCK_CONN_TYPE_LOOPBACK, device, "can_sock", &(new_vchannel->vcan_netsock));
+    ret =  netsock_open((char *)device, NETSOCK_CONN_TYPE_LOOPBACK, device, "can_sock", &(new_vchannel->vcan_netsock));
     if (ret < 0) {
         OVAT_LOG(ERR, CANSTUB, "netsock open failed, path: %s, ret: %d\n", device, ret);
         goto err2;

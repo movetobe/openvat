@@ -125,7 +125,7 @@ netsock_open(char *name, int conn_type, const char *path, char *class_type, stru
         goto err2;
     }
 
-    ret = ovat_pthread_create(&(netsock_->thread_id), "netsock_events_thread", netsock_loop, (void *)netsock_);
+    ret = ovat_pthread_create(&(netsock_->thread_id), name, netsock_loop, (void *)netsock_);
     if (ret < 0) {
         OVAT_LOG(ERR, NETSOCK, "ovat_pthread_create failed, errno %d\n", errno);
         goto err2;

@@ -7,12 +7,14 @@ if [[ $1 = 'start' ]]; then
     ovat-core $2 &
     echo 'ovat-core start'
 elif [[ $1 = 'restart' ]]; then
+    ovat-appctl $2 ovat/exit
     kill -9 `pidof ovat-core`
     unset LD_PRELOAD
     export LD_PRELOAD=$MODULES_SO_PATH
     ovat-core $2 &
     echo 'ovat-core restart'
 elif [[ $1 = 'stop' ]]; then
+    ovat-appctl $2 ovat/exit
     unset LD_PRELOAD
     pkill ovat-core
     echo 'ovat-core stop'

@@ -89,7 +89,7 @@ main(int argc, char *argv[])
     ovat_log_init(log_path);
     ovat_ctl_command_init();
     snprintf(socket_path, PATH_MAX, "/tmp/ovat-ctl-server-%s.sock", (argc > 1) ? argv[1] : "vecu0");
-    ret = ovat_netsock_create("ovat-ctl-server", NETSOCK_CONN_TYPE_SERVER,
+    ret = ovat_netsock_create("ctl-srv", NETSOCK_CONN_TYPE_SERVER,
                                 socket_path, &netsock, ovat_core_msg_handler);
     if (ret < 0) {
         OVAT_LOG(ERR, CORE, "unix server create failed\n");
