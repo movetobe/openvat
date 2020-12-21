@@ -39,6 +39,9 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 
     ds_init(&s);
     ds_put_format(&s, "PduId: %u, ", TxPduId);
+    if (PduInfoPtr->MetaDataPtr != NULL) {
+        ds_put_format(&s, "MetaData: 0x%02x", PduInfoPtr->MetaDataPtr[0]);
+    }
     ds_put_format(&s, "PduInfo: 0x");
     for (i = 0; i < PduInfoPtr->SduLength; i++) {
         ds_put_format(&s, "%02x", pdu[i]);

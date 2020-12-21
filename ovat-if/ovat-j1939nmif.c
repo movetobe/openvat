@@ -106,15 +106,18 @@ ovat_j1939nmif_rx_indication(int fd, void *msg, void *aux)
 {
     struct ovat_netsock_msg *command_msg = (struct ovat_netsock_msg *)msg;
     uint8 pdu[8] = {0};
+	uint8 metadata[1] = {0};
     PduInfoType pduinfo;
     int i = 0;
 
+	metadata[0] =  strtol(command_msg->argv[3], NULL, 16);
     for (i = 0; i < 8; i++) {
-        pdu[i] = strtol(command_msg->argv[3 + i], NULL, 16);
+        pdu[i] = strtol(command_msg->argv[4 + i], NULL, 16);
     }
 
     pduinfo.SduDataPtr = pdu;
     pduinfo.SduLength = 8;
+	pduinfo.MetaDataPtr = metadata;
     J1939Nm_RxIndication(atoi(command_msg->argv[2]), &pduinfo);
     ovat_if_action_reply(fd, aux, "Call J1939Nm_RxIndication()", OVAT_IF_ACTION_OK);
 }
@@ -162,8 +165,8 @@ ovat_j1939nmif_command_register(void *aux)
                                 1, 1, ovat_j1939nmif_get_busoffdelay, aux);
      ovat_ctl_command_register("j1939nm/tx-confirmation", "[TxPduId] [result]",
                                 2, 2, ovat_j1939nmif_tx_confirmation, aux);
-    ovat_ctl_command_register("j1939nm/rx-indication", "[RxPduId] [pdudata]",
-                                9, 9, ovat_j1939nmif_rx_indication, aux);
+    ovat_ctl_command_register("j1939nm/rx-indication", "[RxPduId] [metadata] [pdudata]",
+                                10, 10, ovat_j1939nmif_rx_indication, aux);
     ovat_ctl_command_register("j1939nm/request_ind", "[node] [channel] [requestedPgn] \
 [extIdInfo.extIdType] [extIdInfo.extId1] [extIdInfo.extId2] [extIdInfo.extId3] \
 [sourceAddress] [destAddress] [priority]",
