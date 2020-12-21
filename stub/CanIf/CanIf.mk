@@ -6,6 +6,8 @@ INCLUDE_DIRS+=$(STUB_DIR)/Common \
 			  $(BASE_DIR)/utilities \
 			  $(STUB_DIR)/Can \
 			  $(STUB_DIR)/CanNm \
+			  $(STUB_DIR)/J1939Nm \
+			  $(STUB_DIR)/J1939Rm \
 			  $(STUB_DIR)/Nm \
 			  $(BASE_DIR)/ovat-netsock \
 			  $(BASE_DIR)/ovat-netsock/netscok \

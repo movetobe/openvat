@@ -3,6 +3,7 @@
 #include "dynamic-string.h"
 #include "Can.h"
 #include "CanNm.h"
+#include "J1939Nm.h"
 #include "ovat-list.h"
 
 static struct list_head txpduid_list;
@@ -69,6 +70,7 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 Std_ReturnType CanIf_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 {
     CanNm_TxConfirmation(TxPduId, E_OK);
+    J1939Nm_TxConfirmation(TxPduId, E_OK);
     return E_OK;
 }
 
@@ -81,6 +83,7 @@ Std_ReturnType CanIf_RxIndication(PduIdType RxPduId, size_t length, void *data)
     pduInfo.SduLength = length;
 
     CanNm_RxIndication(RxPduId, &pduInfo);
+    J1939Nm_RxIndication(RxPduId, &pduInfo);
     return E_OK;
 }
 
