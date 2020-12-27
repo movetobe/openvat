@@ -26,4 +26,13 @@ void Can_Init(const Can_ConfigType *config);
 void Can_MainFunction(void);
 void Can_DeInit(void);
 
+Std_ReturnType Can_GetControllerTxErrorCounter(uint8 ControllerId,
+                                                uint8* TxErrorCounterPtr);
+
+Std_ReturnType Can_SetControllerMode(uint8 Controller,
+                            Can_ControllerStateType Transition);
+Std_ReturnType Can_CheckWakeup(uint8 Controller);
+
+Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID);
+
 #endif /* CAN_H */

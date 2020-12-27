@@ -248,5 +248,33 @@ Can_DeInit(void)
 {
     can_destroy_vcan_dev();
 }
+
+Std_ReturnType Can_GetControllerTxErrorCounter(uint8 ControllerId,
+                                                uint8* TxErrorCounterPtr)
+{
+    OVAT_LOG(INFO, CANSTUB, "stub Can_GetControllerTxErrorCounter, ControllerId: %u", ControllerId);
+    return E_OK;
+}
+
+Std_ReturnType Can_SetControllerMode(uint8 Controller,
+                            Can_ControllerStateType Transition)
+{
+    OVAT_LOG(INFO, CANSTUB, "stub Can_SetControllerMode, Controller: %u, State: %u",
+                            Controller, Transition);
+    return E_OK;
+}
+Std_ReturnType Can_CheckWakeup(uint8 Controller)
+{
+    OVAT_LOG(INFO, CANSTUB, "stub Can_CheckWakeup, Controller: %u", Controller);
+    return E_OK;
+}
+
+Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID)
+{
+    OVAT_LOG(INFO, CANSTUB, "stub Can_SetBaudrate, Controller: %u, BaudRate: %u",
+                            Controller, BaudRateConfigID);
+    return E_OK;
+}
+
 OVAT_LOG_REGISTER(canstub_logtype, CANSTUB, INFO);
 
