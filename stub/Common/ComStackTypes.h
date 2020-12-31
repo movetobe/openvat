@@ -47,5 +47,12 @@ typedef struct TPParameter{
 
 } TPParameterType;
 
+typedef uint8 IcomConfigIdType;
+
+typedef enum {
+    ICOM_SWITCH_E_OK     = 0x00,
+    ICOM_SWITCH_E_FAILED = 0x01,
+} IcomSwitch_ErrorType;
+
 #endif /* COMSTACKTYPES_H */
 

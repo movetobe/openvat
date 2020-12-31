@@ -18,5 +18,14 @@ void CanSM_DeInit(void)
     return;
 }
 
+void CanSM_CurrentIcomConfiguration(uint8 ControllerId,
+                                        IcomConfigIdType ConfigurationId,
+                                        IcomSwitch_ErrorType Error)
+{
+    OVAT_LOG(INFO, CANSMSTUB, "stub CanSM_CurrentIcomConfiguration, ControllerId: %u, ConfigurationId: %u, Error: %u",
+                    ControllerId, ConfigurationId, Error);
+    return;
+}
+
 OVAT_LOG_REGISTER(cansmstub_logtype, CANSMSTUB, INFO);
 

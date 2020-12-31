@@ -86,8 +86,14 @@ void CanTp_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
     OVAT_LOG(INFO, CANTPSTUB, "stub CanTp_TxConfirmation, TxPduId: %u, result: %u",
                         TxPduId, result);
     return;
-
 }
+
+void CanTp_DeInit(void)
+{
+    OVAT_LOG(INFO, CANTPSTUB, "stub CanTp_DeInit");
+    return;
+}
+
 
 OVAT_LOG_REGISTER(cantpstub_logtype, CANTPSTUB, INFO);
 

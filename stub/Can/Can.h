@@ -35,4 +35,9 @@ Std_ReturnType Can_CheckWakeup(uint8 Controller);
 
 Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID);
 
+Std_ReturnType Can_SetIcomConfiguration(uint8 Controller,
+                                            IcomConfigIdType ConfigurationId);
+
+
+
 #endif /* CAN_H */

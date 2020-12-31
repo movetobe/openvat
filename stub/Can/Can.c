@@ -276,5 +276,13 @@ Std_ReturnType Can_SetBaudrate(uint8 Controller, uint16 BaudRateConfigID)
     return E_OK;
 }
 
+Std_ReturnType Can_SetIcomConfiguration(uint8 Controller,
+                                            IcomConfigIdType ConfigurationId)
+{
+    OVAT_LOG(INFO, CANSTUB, "stub Can_SetIcomConfiguration, Controller: %u, ConfigurationId: %u",
+                            Controller, ConfigurationId);
+    return E_OK;
+}
+
 OVAT_LOG_REGISTER(canstub_logtype, CANSTUB, INFO);
 

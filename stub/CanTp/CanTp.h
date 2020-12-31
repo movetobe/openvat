@@ -20,5 +20,5 @@ Std_ReturnType CanTp_ReadParameter(PduIdType id, TPParameterType parameter, uint
 void CanTp_MainFunction(void);
 void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
 void CanTp_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
-
+void CanTp_DeInit(void);
 #endif /* CANTP_H */
